@@ -1,0 +1,623 @@
+definitions:
+  database.Airport:
+    properties:
+      airport_id:
+        type: integer
+      city:
+        type: string
+      country:
+        type: string
+      iata:
+        type: string
+      icao:
+        type: string
+      name:
+        type: string
+      timezone:
+        description: |-
+          Latitude  string
+          Longitude string
+          Altitude  string
+        type: string
+    type: object
+  database.Booking:
+    properties:
+      booking_date:
+        type: string
+      booking_id:
+        type: integer
+      citizen_id:
+        type: string
+      flight_id:
+        type: integer
+      price:
+        type: number
+      seat_number:
+        type: string
+      total_passengers:
+        type: integer
+    type: object
+  database.Flight:
+    properties:
+      aircraft_id:
+        type: integer
+      arrival_airport:
+        type: string
+      arrival_time:
+        type: string
+      board_time:
+        type: string
+      departure_airport:
+        type: string
+      departure_time:
+        type: string
+      flight_id:
+        type: integer
+      flight_number:
+        type: string
+      gate:
+        type: string
+      status:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/airports:
+    get:
+      consumes:
+      - application/json
+      description: Get all airports
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Airport'
+            type: array
+      summary: Get all airports
+      tags:
+      - airports
+  /api/v1/airports/iata/{iata}:
+    get:
+      consumes:
+      - application/json
+      description: Get airport by IATA code
+      parameters:
+      - description: IATA code
+        in: path
+        name: iata
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Airport'
+      summary: Get airport by IATA code
+      tags:
+      - airports
+  /api/v1/airports/id/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get airport by ID
+      parameters:
+      - description: Airport ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Airport'
+      summary: Get airport by ID
+      tags:
+      - airports
+  /api/v1/bookings:
+    get:
+      consumes:
+      - application/json
+      description: Get all bookings
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Booking'
+      summary: Get all bookings
+      tags:
+      - bookings
+    post:
+      consumes:
+      - application/json
+      description: Create a booking
+      parameters:
+      - description: Booking object
+        in: body
+        name: booking
+        required: true
+        schema:
+          $ref: '#/definitions/database.Booking'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Booking'
+      summary: Create a booking
+      tags:
+      - bookings
+  /api/v1/bookings/{booking_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a booking
+      parameters:
+      - description: Booking ID
+        in: path
+        name: booking_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a booking
+      tags:
+      - bookings
+    put:
+      consumes:
+      - application/json
+      description: Update a booking
+      parameters:
+      - description: Booking ID
+        in: path
+        name: booking_id
+        required: true
+        type: string
+      - description: Booking object
+        in: body
+        name: booking
+        required: true
+        schema:
+          $ref: '#/definitions/database.Booking'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Booking'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a booking
+      tags:
+      - bookings
+  /api/v1/bookings/search/booking:
+    get:
+      consumes:
+      - application/json
+      description: Get booking by ID
+      parameters:
+      - description: Booking ID
+        in: query
+        name: booking_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Booking'
+      summary: Get booking by ID
+      tags:
+      - bookings
+  /api/v1/bookings/search/citizen:
+    get:
+      consumes:
+      - application/json
+      description: Get booking by citizen ID
+      parameters:
+      - description: Citizen ID
+        in: query
+        name: citizen_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Booking'
+      summary: Get booking by citizen ID
+      tags:
+      - bookings
+  /api/v1/bookings/search/flight:
+    get:
+      consumes:
+      - application/json
+      description: Get booking by flight ID
+      parameters:
+      - description: Flight ID
+        in: query
+        name: flight_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Booking'
+      summary: Get booking by flight ID
+      tags:
+      - bookings
+  /api/v1/flights:
+    get:
+      consumes:
+      - application/json
+      description: Get all flights
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Flight'
+            type: array
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all flights
+      tags:
+      - flights
+    post:
+      consumes:
+      - application/json
+      description: Create a new flight
+      parameters:
+      - description: Flight object
+        in: body
+        name: flight
+        required: true
+        schema:
+          $ref: '#/definitions/database.Flight'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/database.Flight'
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new flight
+      tags:
+      - flights
+  /api/v1/flights/{flight_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove a flight
+      parameters:
+      - description: Flight ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: message
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Remove a flight
+      tags:
+      - flights
+    get:
+      consumes:
+      - application/json
+      description: Get a flight by its ID
+      parameters:
+      - description: Flight ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Flight'
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a flight by its ID
+      tags:
+      - flights
+    put:
+      consumes:
+      - application/json
+      description: Update a flight
+      parameters:
+      - description: Flight ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Flight object
+        in: body
+        name: flight
+        required: true
+        schema:
+          $ref: '#/definitions/database.Flight'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Flight'
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a flight
+      tags:
+      - flights
+  /api/v1/flights/roundtrip:
+    get:
+      description: Fetch round-trip flights based on departure and arrival airports
+        and times
+      parameters:
+      - description: Departure Airport
+        in: query
+        name: departure
+        required: true
+        type: string
+      - description: Arrival Airport
+        in: query
+        name: arrival
+        required: true
+        type: string
+      - description: Departure Time
+        format: date-time
+        in: query
+        name: departure_time
+        required: true
+        type: string
+      - description: Return Time
+        format: date-time
+        in: query
+        name: return_time
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: departing_flights and return_flights
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get round-trip flights
+      tags:
+      - flights
+  /api/v1/flights/search:
+    get:
+      consumes:
+      - application/json
+      description: Get flights by departure and arrival airports
+      parameters:
+      - description: Departure Airport
+        in: query
+        name: departure
+        required: true
+        type: string
+      - description: Arrival Airport
+        in: query
+        name: arrival
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Flight'
+            type: array
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get flights by departure and arrival airports
+      tags:
+      - flights
+  /api/v1/flights/search/flight_number:
+    get:
+      consumes:
+      - application/json
+      description: Get a flight by its flight number
+      parameters:
+      - description: Flight Number
+        in: query
+        name: flight_number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Flight'
+            type: array
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a flight by its flight number
+      tags:
+      - flights
+  /api/v1/flights/search/oneway:
+    get:
+      consumes:
+      - application/json
+      description: Get flights by departure and arrival airports and departure time
+      parameters:
+      - description: Departure Airport
+        in: query
+        name: departure
+        required: true
+        type: string
+      - description: Arrival Airport
+        in: query
+        name: arrival
+        required: true
+        type: string
+      - description: Departure Time
+        format: date-time
+        in: query
+        name: departure_time
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Flight'
+            type: array
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get flights by departure and arrival airports and departure time
+      tags:
+      - flights
+swagger: "2.0"
