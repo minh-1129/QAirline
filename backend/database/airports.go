@@ -1,12 +1,12 @@
 package database
 
 import (
-    "database/sql"
-    "encoding/csv"
-    "log"
-    "os"
+	"database/sql"
+	"encoding/csv"
+	"log"
+	"os"
 
-    "github.com/lib/pq"
+	"github.com/lib/pq"
 )
 
 // Airport represents the structure of an airport
@@ -49,7 +49,8 @@ func CreateAirportsTable(db *sql.DB) error {
     `
     _, err := db.Exec(createTableQuery)
     if err != nil {
-        log.Fatalf("Failed to create 'airports' table: %v", err)
+        log.Printf("Failed to create 'airports' table: %v", err)
+        return err
     }
 
     return nil
@@ -62,10 +63,11 @@ func InsertAirport(db *sql.DB, airport Airport) error {
     VALUES ($1, $2, $3, $4, $5, $6)
     RETURNING airport_id`
 
-    var airportID int
+    airportID := int(0)
     err := db.QueryRow(query, airport.Name, airport.City, airport.Country, airport.IATA, airport.ICAO, airport.Timezone).Scan(&airportID)
     if err != nil {
-        log.Fatalf("Failed to insert airport: %v", err)
+        log.Printf("Failed to insert airport: %v", err)
+        return err
     }
 
     return nil
@@ -75,14 +77,15 @@ func InsertAirport(db *sql.DB, airport Airport) error {
 func ReadCSVAndInsertAirPorts(db *sql.DB, filePath string) error {
     file, err := os.Open(filePath)
     if err != nil {
-        log.Fatalf("Failed to open file: %v", err)
+        log.Printf("Failed to open file: %v", err)
     }
     defer file.Close()
 
     reader := csv.NewReader(file)
     records, err := reader.ReadAll()
     if err != nil {
-        log.Fatalf("Failed to read CSV file: %v", err)
+        log.Printf("Failed to read CSV file: %v", err)
+        return err
     }
 
     for _, record := range records[1:] {
@@ -104,7 +107,8 @@ func BulkInsertAirports(db *sql.DB, filePath string) error {
     // Open the CSV file
     file, err := os.Open(filePath)
     if err != nil {
-        log.Fatalf("failed to open CSV file: %v", err)
+        log.Printf("failed to open CSV file: %v", err)
+        return err
     }
     defer file.Close()
 
@@ -112,44 +116,51 @@ func BulkInsertAirports(db *sql.DB, filePath string) error {
     reader := csv.NewReader(file)
     records, err := reader.ReadAll()
     if err != nil {
-        log.Fatalf("failed to read CSV file: %v", err)
+        log.Printf("failed to read CSV file: %v", err)
+        return err
     }
 
     tx, err := db.Begin()
     if err != nil {
-        log.Fatalf("failed to begin transaction: %v", err)
+        log.Printf("failed to begin transaction: %v", err)
+        return err
     }
 
     // Prepare the SQL statement
     stmt, err := tx.Prepare(pq.CopyIn("airports", "name", "city", "country", "iata", "icao", "timezone"))
     if err != nil {
-        log.Fatalf("failed to prepare statement: %v", err)
+        log.Printf("failed to prepare statement: %v", err)
+        return err
     }
 
     for _, record := range records[1:] {
         // Insert the record into the 'airports' table
         _, err = stmt.Exec(record[1], record[2], record[3], record[4], record[5], record[11])
         if err != nil {
-            log.Fatalf("failed to insert record: %v", err)
+            log.Printf("failed to insert record: %v", err)
+            return err
         }
     }
 
     // Execute the prepared statement
     _, err = stmt.Exec()
     if err != nil {
-        log.Fatalf("failed to execute statement: %v", err)
+        log.Printf("failed to execute statement: %v", err)
+        return err
     }
 
     // Close the prepared statement
     err = stmt.Close()
     if err != nil {
-        log.Fatalf("failed to close statement: %v", err)
+        log.Printf("failed to close statement: %v", err)
+        return err
     }
 
     // Commit the transaction
     err = tx.Commit()
     if err != nil {
-        log.Fatalf("failed to commit transaction: %v", err)
+        log.Printf("failed to commit transaction: %v", err)
+        return err
     }
 
     return nil
@@ -165,7 +176,7 @@ func GetAllAirports(db *sql.DB) ([]Airport, error) {
     }
     defer rows.Close()
 
-    var airports []Airport
+    airports := []Airport{}
     for rows.Next() {
         var airport Airport
         if err := rows.Scan(&airport.AirportID, &airport.Name, &airport.City, &airport.Country, &airport.IATA, &airport.ICAO, &airport.Timezone); err != nil {
@@ -183,7 +194,7 @@ func GetAirportByIATA(db *sql.DB, iata string) (Airport, error) {
     query := `SELECT airport_id, name, city, country, iata, icao, timezone FROM airports WHERE iata = $1`
     row := db.QueryRow(query, iata)
 
-    var airport Airport
+    airport := Airport{}
     if err := row.Scan(
         &airport.AirportID,
         &airport.Name,
@@ -205,7 +216,7 @@ func GetAirportByICAO(db *sql.DB, icao string) (Airport, error) {
     query := `SELECT airport_id, name, city, country, iata, icao, timezone FROM airports WHERE icao = $1`
     row := db.QueryRow(query, icao)
 
-    var airport Airport
+    airport := Airport{}
     if err := row.Scan(
         &airport.AirportID,
         &airport.Name,
@@ -222,12 +233,34 @@ func GetAirportByICAO(db *sql.DB, icao string) (Airport, error) {
     return airport, nil
 }
 
+// GetAirportByCity returns an airport by its city
+func GetAirportByCity(db *sql.DB, city string) ([]Airport, error) {
+    query := `SELECT airport_id, name, city, country, iata, icao, timezone FROM airports WHERE city = $1`
+    rows, err := db.Query(query, city)
+    if err != nil {
+        log.Printf("Failed to get airport by city: %v", err)
+        return nil, err
+    }
+
+    airports := []Airport{}
+    for rows.Next() {
+        var airport Airport
+        if err := rows.Scan(&airport.AirportID, &airport.Name, &airport.City, &airport.Country, &airport.IATA, &airport.ICAO, &airport.Timezone); err != nil {
+            log.Printf("Failed to scan airports: %v", err)
+            return nil, err
+        }
+        airports = append(airports, airport)
+    }
+
+    return airports, nil
+}
+
 // GetAirportByID returns an airport by its ID
 func GetAirportByID(db *sql.DB, id int) (Airport, error) {
     query := `SELECT airport_id, name, city, country, iata, icao, timezone FROM airports WHERE airport_id = $1`
     row := db.QueryRow(query, id)
 
-    var airport Airport
+    airport := Airport{}
     if err := row.Scan(
         &airport.AirportID,
         &airport.Name,

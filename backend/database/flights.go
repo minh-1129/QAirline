@@ -1,11 +1,11 @@
 package database
 
 import (
-    "database/sql"
-    "log"
-    "time"
+	"database/sql"
+	"log"
+	"time"
 
-    _ "github.com/lib/pq"
+	_ "github.com/lib/pq"
 )
 
 // Flight struct for flights table
@@ -27,27 +27,26 @@ type FlightsResponse struct {
     ReturnFlights    []Flight `json:"return_flights"`
 }
 
-const TIME_LAYOUT = time.RFC3339
-
 // CreateFlightsTable creates the 'flights' table
 func CreateFlightsTable(db *sql.DB) error {
     createTableQuery := `
     CREATE TABLE IF NOT EXISTS flights (
         flight_id SERIAL PRIMARY KEY,
-        flight_number VARCHAR(20) NOT NULL,
+        flight_number VARCHAR(200) NOT NULL,
         aircraft_id INT NOT NULL,
-        departure_airport VARCHAR(3) NOT NULL,
-        arrival_airport VARCHAR(3) NOT NULL,
+        departure_airport VARCHAR(100) NOT NULL,
+        arrival_airport VARCHAR(100) NOT NULL,
         departure_time TIMESTAMPTZ NOT NULL,
         arrival_time TIMESTAMPTZ NOT NULL,
-        status VARCHAR(20) NOT NULL,
+        status VARCHAR(100) NOT NULL,
         gate VARCHAR(10),
         board_time TIMESTAMPTZ
     )
     `
     _, err := db.Exec(createTableQuery)
     if err != nil {
-        log.Fatalf("Failed to create 'flights' table: %v", err)
+        log.Printf("Failed to create 'flights' table: %v", err)
+        return err
     }
 
     return nil
@@ -57,13 +56,14 @@ func CreateFlightsTable(db *sql.DB) error {
 func SetFlightsForeignKeys(db *sql.DB) error {
     query := `
     ALTER TABLE flights
-    ADD CONSTRAINT fk_flight_plane
-    FOREIGN KEY (aircraft_id) REFERENCES planes(aircraft_id) ON DELETE SET NULL;
+    ADD CONSTRAINT fk_flight_aircraft
+    FOREIGN KEY (aircraft_id) REFERENCES aircrafts(aircraft_id) ON DELETE SET NULL;
     `
 
     _, err := db.Exec(query)
     if err != nil {
-        log.Fatalf("Failed to set foreign key constraint for 'flights' table: %v", err)
+        log.Printf("Failed to set foreign key constraint for 'flights' table: %v", err)
+        return err
     }
 
     return nil
@@ -102,11 +102,8 @@ func GetFlightByID(db *sql.DB, flightID int) (*Flight, error) {
         &flight.BoardTime,
     )
     if err != nil {
-        if err == sql.ErrNoRows {
-            return nil, nil
-        }
-
-        log.Fatalf("could not scan flight: %v", err)
+        log.Printf("could not scan flight: %v", err)
+        return nil, err
     }
 
     return flight, nil
@@ -131,7 +128,8 @@ func GetFlightByFlightNumber(db *sql.DB, flightNumber string) ([]Flight, error) 
 
     row, err := db.Query(query, flightNumber)
     if err != nil {
-        log.Fatalf("could not query flight: %v", err)
+        log.Printf("could not query flight: %v", err)
+        return []Flight{}, err
     }
     defer row.Close()
 
@@ -151,7 +149,8 @@ func GetFlightByFlightNumber(db *sql.DB, flightNumber string) ([]Flight, error) 
             &flight.BoardTime,
         )
         if err != nil {
-            log.Fatalf("could not scan flight: %v", err)
+            log.Printf("could not scan flight: %v", err)
+            return []Flight{}, err
         }
 
         flights = append(flights, flight)
@@ -190,7 +189,8 @@ func InsertFlight(db *sql.DB, flight *Flight) (int, error) {
         flight.BoardTime,
     ).Scan(&flightID)
     if err != nil {
-        log.Fatalf("could not insert flight: %v", err)
+        log.Printf("could not insert flight: %v", err)
+        return 0, err
     }
 
     return flightID, nil
@@ -226,7 +226,8 @@ func UpdateFlight(db *sql.DB, flight *Flight) error {
         flight.FlightID,
     )
     if err != nil {
-        log.Fatalf("could not update flight: %v", err)
+        log.Printf("could not update flight: %v", err)
+        return err
     }
 
     return nil
@@ -238,7 +239,8 @@ func RemoveFlight(db *sql.DB, flightID int) error {
 
     _, err := db.Exec(query, flightID)
     if err != nil {
-        log.Fatalf("could not remove flight: %v", err)
+        log.Printf("could not remove flight: %v", err)
+        return err
     }
 
     return nil
@@ -263,13 +265,14 @@ func GetAllFlights(db *sql.DB) ([]Flight, error) {
 
     rows, err := db.Query(query)
     if err != nil {
-        log.Fatalf("could not query flights: %v", err)
+        log.Printf("could not query flights: %v", err)
+        return []Flight{}, err
     }
     defer rows.Close()
 
     flights := []Flight{}
     for rows.Next() {
-        flight := Flight{}
+        var flight Flight
         err := rows.Scan(
             &flight.FlightID,
             &flight.FlightNumber,
@@ -283,7 +286,8 @@ func GetAllFlights(db *sql.DB) ([]Flight, error) {
             &flight.BoardTime,
         )
         if err != nil {
-            log.Fatalf("could not scan flight: %v", err)
+            log.Printf("could not scan flight: %v", err)
+            return []Flight{}, err
         }
 
         flights = append(flights, flight)
@@ -311,13 +315,14 @@ func GetFlightsByDeAndArrAirport(db *sql.DB, departureAirport string, arrivalAir
 
     rows, err := db.Query(query, departureAirport, arrivalAirport)
     if err != nil {
-        log.Fatalf("could not query flights: %v", err)
+        log.Printf("could not query flights: %v", err)
+        return []Flight{}, err
     }
     defer rows.Close()
 
     flights := []Flight{}
     for rows.Next() {
-        flight := Flight{}
+        var flight Flight
         err := rows.Scan(
             &flight.FlightID,
             &flight.FlightNumber,
@@ -331,7 +336,8 @@ func GetFlightsByDeAndArrAirport(db *sql.DB, departureAirport string, arrivalAir
             &flight.BoardTime,
         )
         if err != nil {
-            log.Fatalf("could not scan flight: %v", err)
+            log.Printf("could not scan flight: %v", err)
+            return []Flight{}, err
         }
 
         flights = append(flights, flight)
@@ -359,13 +365,14 @@ func GetFlightsByDeAndArrAirportAndDepTime(db *sql.DB, departureAirport string, 
 
     rows, err := db.Query(query, departureAirport, arrivalAirport, departureTime)
     if err != nil {
-        log.Fatalf("could not query flights: %v", err)
+        log.Printf("could not query flights: %v", err)
+        return []Flight{}, err
     }
     defer rows.Close()
 
     flights := []Flight{}
     for rows.Next() {
-        flight := Flight{}
+        var flight Flight
         err := rows.Scan(
             &flight.FlightID,
             &flight.FlightNumber,
@@ -379,7 +386,8 @@ func GetFlightsByDeAndArrAirportAndDepTime(db *sql.DB, departureAirport string, 
             &flight.BoardTime,
         )
         if err != nil {
-            log.Fatalf("could not scan flight: %v", err)
+            log.Printf("could not scan flight: %v", err)
+            return []Flight{}, err
         }
 
         flights = append(flights, flight)
@@ -395,13 +403,15 @@ func GetRoundTripFlightsByDeAndArrAirportAndTime(db *sql.DB, departureAirport st
     // Departure flights
     departureFlights, err := GetFlightsByDeAndArrAirportAndDepTime(db, departureAirport, arrivalAirport, departureTime)
     if err != nil {
-        log.Fatalf("could not query departure flights: %v", err)
+        log.Printf("could not query departure flights: %v", err)
+        return []Flight{}, []Flight{}, err
     }
 
     // Return flights
     returnFlights, err := GetFlightsByDeAndArrAirportAndDepTime(db, arrivalAirport, departureAirport, returnTime)
     if err != nil {
-        log.Fatalf("could not query return flights: %v", err)
+        log.Printf("could not query return flights: %v", err)
+        return []Flight{}, []Flight{}, err
     }
 
     return departureFlights, returnFlights, nil

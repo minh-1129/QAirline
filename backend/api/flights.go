@@ -4,11 +4,11 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
 	"strings"
 
 	// "fmt"
 	"net/http"
-	"net/url"
 	"strconv"
 	"time"
 	"webserver/database"
@@ -29,8 +29,10 @@ func GetAllFlights(db *sql.DB) http.HandlerFunc {
         flights, err := database.GetAllFlights(db)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+            log.Printf("Failed to get flights: %v", err)
             return
         }
+
         respondWithJSON(r, w, http.StatusOK, flights)
     }
 }
@@ -51,12 +53,14 @@ func CreateFlight(db *sql.DB) http.HandlerFunc {
         var flight database.Flight
         if err := json.NewDecoder(r.Body).Decode(&flight); err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+            log.Printf("Failed to create flight: %v", err)
             return
         }
 
         flightID, err := database.InsertFlight(db, &flight)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+            log.Printf("Failed to create flight: %v", err)
             return
         }
 
@@ -70,7 +74,7 @@ func CreateFlight(db *sql.DB) http.HandlerFunc {
 // @Tags flights
 // @Accept json
 // @Produce json
-// @Param id path int true "Flight ID"
+// @Param flight_id path int true "Flight ID"
 // @Success 200 {object} database.Flight
 // @Failure 400 {object} map[string]string "error"
 // @Failure 404 {object} map[string]string "error"
@@ -80,17 +84,19 @@ func CreateFlight(db *sql.DB) http.HandlerFunc {
 func GetFlightByID(db *sql.DB) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
         // Get the flightID from the URL parameter and convert it to int
-        flightIDStr := strings.Split(r.URL.Path, "/")[len(strings.Split(r.URL.Path, "/"))-1]
+        flightIDStr := GetLastPath(r)
         flightID, err := strconv.Atoi(flightIDStr)
 
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": "Invalid flight ID"})
+            log.Printf("Failed to get flight: %v", err)
             return
         }
 
         flight, err := database.GetFlightByID(db, flightID)
         if err != nil {
             respondWithJSON(r, w, http.StatusNotFound, map[string]string{"error": err.Error()})
+            log.Printf("Failed to get flight: %v", err)
             return
         }
 
@@ -103,16 +109,16 @@ func GetFlightByID(db *sql.DB) http.HandlerFunc {
 // @Tags flights
 // @Accept json
 // @Produce json
-// @Param flight_number query string true "Flight Number"
+// @Param flight_number path string true "Flight Number"
 // @Success 200 {object} []database.Flight
 // @Failure 400 {object} map[string]string "error"
 // @Failure 500 {object} map[string]string "error"
-// @Router /api/v1/flights/search/flight_number [get]
+// @Router /api/v1/flights/search/flight_number/{flight_number} [get]
 // GetFlightByFlightNumber retrieves a flight by its flight number
 func GetFlightsByFlightNumber(db *sql.DB) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
-        flightNumber := r.URL.Query().Get("flight_number")
-        if flightNumber == "" {
+        flightNumber := GetLastPath(r)
+        if strings.TrimSpace(flightNumber) == "" {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": "flight_number is required"})
             return
         }
@@ -120,6 +126,7 @@ func GetFlightsByFlightNumber(db *sql.DB) http.HandlerFunc {
         flights, err := database.GetFlightByFlightNumber(db, flightNumber)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+            log.Printf("Failed to get flight: %v", err)
             return
         }
 
@@ -132,7 +139,7 @@ func GetFlightsByFlightNumber(db *sql.DB) http.HandlerFunc {
 // @Tags flights
 // @Accept json
 // @Produce json
-// @Param id path int true "Flight ID"
+// @Param flight_id path int true "Flight ID"
 // @Param flight body database.Flight true "Flight object"
 // @Success 200 {object} database.Flight
 // @Failure 400 {object} map[string]string "error"
@@ -142,10 +149,11 @@ func GetFlightsByFlightNumber(db *sql.DB) http.HandlerFunc {
 func UpdateFlight(db *sql.DB) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
         // Parse the flightID from the URL parameter and convert it to int
-        flightIDStr := strings.Split(r.URL.Path, "/")[len(strings.Split(r.URL.Path, "/"))-1]
+        flightIDStr := GetLastPath(r)
         flightID, err := strconv.Atoi(flightIDStr)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": "Invalid flight ID"})
+            log.Printf("Failed to update flight: %v", err)
             return
         }
 
@@ -153,6 +161,7 @@ func UpdateFlight(db *sql.DB) http.HandlerFunc {
         var flight database.Flight
         if err := json.NewDecoder(r.Body).Decode(&flight); err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+            log.Printf("Failed to update flight: %v", err)
             return
         }
         flight.FlightID = flightID
@@ -161,6 +170,7 @@ func UpdateFlight(db *sql.DB) http.HandlerFunc {
         err = database.UpdateFlight(db, &flight)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+            log.Printf("Failed to update flight: %v", err)
             return
         }
 
@@ -174,7 +184,7 @@ func UpdateFlight(db *sql.DB) http.HandlerFunc {
 // @Tags flights
 // @Accept json
 // @Produce json
-// @Param id path int true "Flight ID"
+// @Param flight_id path int true "Flight ID"
 // @Success 200 {object} map[string]string "message"
 // @Failure 400 {object} map[string]string "error"
 // @Failure 500 {object} map[string]string "error"
@@ -183,10 +193,11 @@ func UpdateFlight(db *sql.DB) http.HandlerFunc {
 func RemoveFlight(db *sql.DB) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
         // Parse the flight ID from the URL parameter and convert it to int
-        flightIDStr := strings.Split(r.URL.Path, "/")[len(strings.Split(r.URL.Path, "/"))-1]
+        flightIDStr := GetLastPath(r)
         flightID, err := strconv.Atoi(flightIDStr)
         if err != nil {
-            respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": "Invalid flight ID"})
+            respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+            log.Printf("Failed to remove flight: %v", err)
             return
         }
 
@@ -194,6 +205,7 @@ func RemoveFlight(db *sql.DB) http.HandlerFunc {
         err = database.RemoveFlight(db, flightID)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+            log.Printf("Failed to remove flight: %v", err)
             return
         }
 
@@ -222,6 +234,7 @@ func GetFlightsByDeAndArrAirport(db *sql.DB) http.HandlerFunc {
         flights, err := database.GetFlightsByDeAndArrAirport(db, departureAirport, arrivalAirport)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+            log.Printf("Failed to get flights: %v", err)
             return
         }
 
@@ -248,20 +261,22 @@ func GetFlightsByDeAndArrAirportAndDepTime(db *sql.DB) http.HandlerFunc {
         arrivalAirport := r.URL.Query().Get("arrival")
         departureTimeStr := r.URL.Query().Get("departure_time")
 
-        if departureTimeStr == "" {
+        if strings.TrimSpace(departureTimeStr) == "" {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": "departure_time is required"})
             return
         }
 
         departureTime, err := time.Parse(time.RFC3339, departureTimeStr)
         if err != nil {
-            respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": "invalid departure_time format"})
+            respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+            log.Printf("Failed to get flights: %v", err)
             return
         }
 
         flights, err := database.GetFlightsByDeAndArrAirportAndDepTime(db, departureAirport, arrivalAirport, departureTime)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+            log.Printf("Failed to get flights: %v", err)
             return
         }
 
@@ -290,26 +305,29 @@ func GetRoundTripFlightsByDeAndArrAirportAndTime(db *sql.DB) http.HandlerFunc {
         departureTimeStr := r.URL.Query().Get("departure_time")
         returnTimeStr := r.URL.Query().Get("return_time")
 
-        if departureTimeStr == "" || returnTimeStr == "" {
+        if strings.TrimSpace(departureTimeStr) == "" || strings.TrimSpace(returnTimeStr) == "" {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": "departure_time and return_time are required"})
             return
         }
 
         departureTime, err := time.Parse(database.TIME_LAYOUT, departureTimeStr)
         if err != nil {
-            respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": "invalid departure_time format"})
+            respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+            log.Printf("Failed to get flights: %v", err)
             return
         }
 
         returnTime, err := time.Parse(database.TIME_LAYOUT, returnTimeStr)
         if err != nil {
-            respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": "invalid return_time format"})
+            respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+            log.Printf("Failed to get flights: %v", err)
             return
         }
 
         departingFlights, returnFlights, err := database.GetRoundTripFlightsByDeAndArrAirportAndTime(db, departureAirport, arrivalAirport, departureTime, returnTime)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+            log.Printf("Failed to get flights: %v", err)
             return
         }
 
@@ -322,46 +340,41 @@ func GetRoundTripFlightsByDeAndArrAirportAndTime(db *sql.DB) http.HandlerFunc {
 
 // RegisterFlightsRoutes registers flights routes
 func RegisterFlightsRoutes(db *sql.DB) {
-    url := &url.URL{
-        Scheme: "http",
-        Host:   fmt.Sprintf("%s:%d", API_HOST, API_PORT),
-    }
-
     // Register the API routes
     http.HandleFunc(
-        fmt.Sprintf("GET /%s", url.JoinPath(API_BASE_URL, FlightRoute).Path),
+        fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, FlightRoute)),
         GetAllFlights(db),
     )
     http.HandleFunc(
-        fmt.Sprintf("POST /%s", url.JoinPath(API_BASE_URL, FlightRoute).Path),
+        fmt.Sprintf("POST /%s", GetJoinedPath(API_BASE_URL, FlightRoute)),
         CreateFlight(db),
     )
     http.HandleFunc(
-        fmt.Sprintf("GET /%s", url.JoinPath(API_BASE_URL, FlightRoute, "{id}").Path),
+        fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, FlightRoute, "{flight_id}")),
         GetFlightByID(db),
     )
     http.HandleFunc(
-        fmt.Sprintf("PUT /%s", url.JoinPath(API_BASE_URL, FlightRoute, "{id}").Path),
+        fmt.Sprintf("PUT /%s", GetJoinedPath(API_BASE_URL, FlightRoute, "{flight_id}")),
         UpdateFlight(db),
     )
     http.HandleFunc(
-        fmt.Sprintf("DELETE /%s", url.JoinPath(API_BASE_URL, FlightRoute, "{id}").Path),
+        fmt.Sprintf("DELETE /%s", GetJoinedPath(API_BASE_URL, FlightRoute, "{flight_id}")),
         RemoveFlight(db),
     )
     http.HandleFunc(
-        fmt.Sprintf("GET /%s", url.JoinPath(API_BASE_URL, FlightRoute, "search/flight_number").Path),
+        fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, FlightRoute, "search/flight_number")),
         GetFlightsByFlightNumber(db),
     )
     http.HandleFunc(
-        fmt.Sprintf("GET /%s", url.JoinPath(API_BASE_URL, FlightRoute, "search").Path),
+        fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, FlightRoute, "search")),
         GetFlightsByDeAndArrAirport(db),
     )
     http.HandleFunc(
-        fmt.Sprintf("GET /%s", url.JoinPath(API_BASE_URL, FlightRoute, "search/oneway").Path),
+        fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, FlightRoute, "search/oneway")),
         GetFlightsByDeAndArrAirportAndDepTime(db),
     )
     http.HandleFunc(
-        fmt.Sprintf("GET /%s", url.JoinPath(API_BASE_URL, FlightRoute, "search/roundtrip").Path),
+        fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, FlightRoute, "search/roundtrip")),
         GetRoundTripFlightsByDeAndArrAirportAndTime(db),
     )
 }

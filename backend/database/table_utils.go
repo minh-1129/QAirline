@@ -1,18 +1,23 @@
 package database
 
 import (
-    "fmt"
-    "log"
-    "database/sql"
-    _ "github.com/lib/pq"
+	"database/sql"
+	"fmt"
+	"log"
+	"time"
+
+	_ "github.com/lib/pq"
 )
+
+const TIME_LAYOUT = time.RFC3339
 
 // DropTable drops any table by its name if it exists
 func DropTable(db *sql.DB, tableName string) error {
     query := fmt.Sprintf("DROP TABLE IF EXISTS %s;", tableName)
     _, err := db.Exec(query)
     if err != nil {
-        log.Fatalf("Failed to drop table '%s': %v", tableName, err)
+        log.Printf("Failed to drop table '%s': %v", tableName, err)
+        return err
     }
 
     return nil
@@ -23,7 +28,8 @@ func ForceDropTable(db *sql.DB, tableName string) error {
     query := fmt.Sprintf("DROP TABLE IF EXISTS %s CASCADE;", tableName)
     _, err := db.Exec(query)
     if err != nil {
-        log.Fatalf("Failed to drop table '%s': %v", tableName, err)
+        log.Printf("Failed to drop table '%s': %v", tableName, err)
+        return err
     }
 
     return nil

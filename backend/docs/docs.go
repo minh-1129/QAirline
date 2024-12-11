@@ -15,6 +15,308 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/aircrafts": {
+            "get": {
+                "description": "Get all aircrafts",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "aircrafts"
+                ],
+                "summary": "Get all aircrafts",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.Aircraft"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create an aircraft",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "aircrafts"
+                ],
+                "summary": "Create an aircraft",
+                "parameters": [
+                    {
+                        "description": "Aircraft object",
+                        "name": "aircraft",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/database.Aircraft"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/database.Aircraft"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/aircrafts/search/aircraft/{aircraft_type}": {
+            "get": {
+                "description": "Get aircrafts by aircraft type",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "aircrafts"
+                ],
+                "summary": "Get aircrafts by aircraft type",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Aircraft Type",
+                        "name": "aircraft_type",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.Aircraft"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/aircrafts/search/capacity/{capacity}": {
+            "get": {
+                "description": "Get all aircrafts by capacity threshold (\u003e= capacity)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "aircrafts"
+                ],
+                "summary": "Get all aircrafts by capacity threshold (\u003e= capacity)",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Aircraft Capacity",
+                        "name": "capacity",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.Aircraft"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/aircrafts/search/manufacturer/{aircraft_manufacturer}": {
+            "get": {
+                "description": "Get all aircrafts by aircraft manufacturer",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "aircrafts"
+                ],
+                "summary": "Get all aircrafts by aircraft manufacturer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Aircraft Manufacturer",
+                        "name": "aircraft_manufacturer",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.Aircraft"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/aircrafts/search/name/{aircraft_name}": {
+            "get": {
+                "description": "Get all aircrafts by aircraft name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "aircrafts"
+                ],
+                "summary": "Get all aircrafts by aircraft name",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Aircraft Name",
+                        "name": "aircraft_name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.Aircraft"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/aircrafts/{aircraft_id}": {
+            "get": {
+                "description": "Get aircraft by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "aircrafts"
+                ],
+                "summary": "Get aircraft by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Aircraft ID",
+                        "name": "aircraft_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/database.Aircraft"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update aircraft by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "aircrafts"
+                ],
+                "summary": "Update aircraft by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Aircraft ID",
+                        "name": "aircraft_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Aircraft object",
+                        "name": "aircraft",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/database.Aircraft"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/database.Aircraft"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Remove aircraft by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "aircrafts"
+                ],
+                "summary": "Remove aircraft by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Aircraft ID",
+                        "name": "aircraft_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/airports": {
             "get": {
                 "description": "Get all airports",
@@ -28,6 +330,41 @@ const docTemplate = `{
                     "airports"
                 ],
                 "summary": "Get all airports",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.Airport"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/airports/city/{city}": {
+            "get": {
+                "description": "Get airport by city",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "airports"
+                ],
+                "summary": "Get airport by city",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "City",
+                        "name": "city",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -73,7 +410,39 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/airports/id/{id}": {
+        "/api/v1/airports/icao/{icao}": {
+            "get": {
+                "description": "Get airport by ICAO code",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "airports"
+                ],
+                "summary": "Get airport by ICAO code",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ICAO code",
+                        "name": "icao",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/database.Airport"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/airports/id/{airport_id}": {
             "get": {
                 "description": "Get airport by ID",
                 "consumes": [
@@ -90,7 +459,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Airport ID",
-                        "name": "id",
+                        "name": "airport_id",
                         "in": "path",
                         "required": true
                     }
@@ -122,7 +491,10 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/database.Booking"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.Booking"
+                            }
                         }
                     }
                 }
@@ -160,7 +532,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/bookings/search/booking": {
+        "/api/v1/bookings/search/booking/{booking_id}": {
             "get": {
                 "description": "Get booking by ID",
                 "consumes": [
@@ -178,7 +550,7 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "Booking ID",
                         "name": "booking_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -192,7 +564,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/bookings/search/citizen": {
+        "/api/v1/bookings/search/citizen/{citizen_id}": {
             "get": {
                 "description": "Get booking by citizen ID",
                 "consumes": [
@@ -210,7 +582,7 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Citizen ID",
                         "name": "citizen_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -218,13 +590,16 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/database.Booking"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.Booking"
+                            }
                         }
                     }
                 }
             }
         },
-        "/api/v1/bookings/search/flight": {
+        "/api/v1/bookings/search/flight/{flight_id}": {
             "get": {
                 "description": "Get booking by flight ID",
                 "consumes": [
@@ -242,7 +617,7 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "Flight ID",
                         "name": "flight_id",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -250,7 +625,10 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/database.Booking"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.Booking"
+                            }
                         }
                     }
                 }
@@ -306,7 +684,7 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "Delete a booking",
+                "description": "Remove a booking",
                 "consumes": [
                     "application/json"
                 ],
@@ -316,7 +694,7 @@ const docTemplate = `{
                 "tags": [
                     "bookings"
                 ],
-                "summary": "Delete a booking",
+                "summary": "Remove a booking",
                 "parameters": [
                     {
                         "type": "string",
@@ -564,7 +942,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/flights/search/flight_number": {
+        "/api/v1/flights/search/flight_number/{flight_number}": {
             "get": {
                 "description": "Get a flight by its flight number",
                 "consumes": [
@@ -582,7 +960,7 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Flight Number",
                         "name": "flight_number",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -702,7 +1080,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Flight ID",
-                        "name": "id",
+                        "name": "flight_id",
                         "in": "path",
                         "required": true
                     }
@@ -759,7 +1137,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Flight ID",
-                        "name": "id",
+                        "name": "flight_id",
                         "in": "path",
                         "required": true
                     },
@@ -816,7 +1194,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Flight ID",
-                        "name": "id",
+                        "name": "flight_id",
                         "in": "path",
                         "required": true
                     }
@@ -851,9 +1229,417 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/passengers": {
+            "get": {
+                "description": "Get all passengers",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "passengers"
+                ],
+                "summary": "Get all passengers",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.Passenger"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a passenger",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "passengers"
+                ],
+                "summary": "Create a passenger",
+                "parameters": [
+                    {
+                        "description": "Passenger object",
+                        "name": "passenger",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/database.Passenger"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/database.Passenger"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/passengers/booking/{booking_id}": {
+            "get": {
+                "description": "Get all passengers by booking ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "passengers"
+                ],
+                "summary": "Get all passengers by booking ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Booking ID",
+                        "name": "booking_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.Passenger"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/passengers/passenger/{passenger_id}": {
+            "get": {
+                "description": "Get passenger by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "passengers"
+                ],
+                "summary": "Get passenger by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Passenger ID",
+                        "name": "passenger_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/database.Passenger"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update passenger by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "passengers"
+                ],
+                "summary": "Update passenger by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Passenger ID",
+                        "name": "passenger_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Passenger object",
+                        "name": "passenger",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/database.Passenger"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/database.Passenger"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Remove a passenger",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "passengers"
+                ],
+                "summary": "Remove a passenger",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Passenger ID",
+                        "name": "passenger_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users": {
+            "get": {
+                "description": "Get all users",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get all users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.User"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Create a user",
+                "parameters": [
+                    {
+                        "description": "User object",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/database.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/database.User"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/search/citizen_id/{citizen_id}": {
+            "get": {
+                "description": "Get user by citizen ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get user by citizen ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Citizen ID",
+                        "name": "citizen_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/database.User"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/user/{user_id}": {
+            "get": {
+                "description": "Get user by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get user by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/database.User"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update user by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update user by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User object",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/database.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/database.User"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Remove user by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Remove user by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/database.User"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "database.Aircraft": {
+            "type": "object",
+            "properties": {
+                "aircraft_id": {
+                    "type": "integer"
+                },
+                "aircraft_manufacturer": {
+                    "type": "string"
+                },
+                "aircraft_name": {
+                    "type": "string"
+                },
+                "aircraft_type": {
+                    "type": "string"
+                },
+                "capacity": {
+                    "type": "integer"
+                }
+            }
+        },
         "database.Airport": {
             "type": "object",
             "properties": {
@@ -891,6 +1677,9 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "citizen_id": {
+                    "type": "string"
+                },
+                "class": {
                     "type": "string"
                 },
                 "flight_id": {
@@ -939,6 +1728,88 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "string"
+                }
+            }
+        },
+        "database.Passenger": {
+            "type": "object",
+            "properties": {
+                "booking_id": {
+                    "type": "integer"
+                },
+                "citizen_id": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "dob": {
+                    "type": "string"
+                },
+                "email": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "passenger_id": {
+                    "type": "integer"
+                },
+                "phone_number": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "seat_number": {
+                    "type": "string"
+                }
+            }
+        },
+        "database.User": {
+            "type": "object",
+            "properties": {
+                "citizen_id": {
+                    "type": "string"
+                },
+                "dob": {
+                    "type": "string"
+                },
+                "email": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "hashed_password": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "sql.NullString": {
+            "type": "object",
+            "properties": {
+                "string": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if String is not NULL",
+                    "type": "boolean"
                 }
             }
         }

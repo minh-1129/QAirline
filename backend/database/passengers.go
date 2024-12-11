@@ -1,12 +1,12 @@
 package database
 
 import (
-    "database/sql"
-    "fmt"
-    "log"
-    "time"
+	"database/sql"
+	"fmt"
+	"log"
+	"time"
 
-    _ "github.com/lib/pq"
+	_ "github.com/lib/pq"
 )
 
 // Passenger struct for passengers table
@@ -20,19 +20,20 @@ type Passenger struct {
     PhoneNumber sql.NullString `json:"phone_number"`
     Email       sql.NullString `json:"email"`
     Dob         time.Time `json:"dob"`
+    Gender      string `json:"gender"`
 }
 
 // CreatePassengersTable creates the 'passenger' table
 func CreatePassengersTable(db *sql.DB) error {
     createTableQuery := `
-    CREATE TABLE passengers (
+    CREATE TABLE IF NOT EXISTS passengers (
         passenger_id SERIAL PRIMARY KEY,               -- Unique identifier for the passenger
         booking_id INT NOT NULL,                       -- Foreign key to reference the booking this passenger belongs to (ID)
         citizen_id VARCHAR(100) UNIQUE,       -- Foreign key to reference the user who booked this passenger (ID)
         first_name VARCHAR(100) NOT NULL,              -- First name of the passenger
         last_name VARCHAR(100) NOT NULL,               -- Last name of the passenger
         seat_number VARCHAR(10) NOT NULL,              -- Seat number, e.g., "1A", "2B"
-        phone_number VARCHAR(20),             -- Phone number of the passenger
+        phone_number VARCHAR(20),             -- PhoneNumber number of the passenger
         email VARCHAR(100),                   -- Email address of the passenger
         dob DATE NOT NULL,                             -- Date of birth of the passenger
         gender VARCHAR(10) NOT NULL
@@ -40,7 +41,8 @@ func CreatePassengersTable(db *sql.DB) error {
     `
     _, err := db.Exec(createTableQuery)
     if err != nil {
-        log.Fatalf("Failed to create 'passengers' table: %v", err)
+        log.Printf("Failed to create 'passengers' table: %v", err)
+        return err
     }
 
     return nil
@@ -56,7 +58,8 @@ func SetPassengersForeignKeys(db *sql.DB) error {
 
     _, err := db.Exec(query)
     if err != nil {
-        log.Fatalf("Failed to set foreign key constraint for 'passengers' table: %v", err)
+        log.Printf("Failed to set foreign key constraint for 'passengers' table: %v", err)
+        return err
     }
 
     return nil
@@ -64,10 +67,10 @@ func SetPassengersForeignKeys(db *sql.DB) error {
 
 // GetPassengerByID retrieves a passenger by their ID
 func GetPassengerByID(db *sql.DB, passengerID int) (*Passenger, error) {
-    query := `SELECT passenger_id, booking_id, citizen_id, first_name, last_name, seat_number, phone_number, email, dob
+    query := `SELECT passenger_id, booking_id, citizen_id, first_name, last_name, seat_number, phone_number, email, dob, gender
               FROM passengers WHERE passenger_id = $1`
 
-    var passenger Passenger
+    passenger := Passenger{}
     err := db.QueryRow(query, passengerID).Scan(
         &passenger.PassengerID,
         &passenger.BookingID,
@@ -78,6 +81,7 @@ func GetPassengerByID(db *sql.DB, passengerID int) (*Passenger, error) {
         &passenger.PhoneNumber,
         &passenger.Email,
         &passenger.Dob,
+        &passenger.Gender,
     )
     if err != nil {
         return nil, fmt.Errorf("could not get passenger: %v", err)
@@ -89,9 +93,11 @@ func GetPassengerByID(db *sql.DB, passengerID int) (*Passenger, error) {
 // InsertPassenger inserts a new passenger into the passengers table
 func InsertPassenger(db *sql.DB, passenger *Passenger) (int, error) {
     query := `
-    INSERT INTO passengers (booking_id, citizen_id, first_name, last_name, seat_number, phone_number, email, dob)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING passenger_id
+    INSERT INTO passengers (booking_id, citizen_id, first_name, last_name, seat_number, phone_number, email, dob, gender)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING passenger_id
     `
+
+    dob := passenger.Dob.Format(DOB_LAYOUT)
 
     var passengerID int
     err := db.QueryRow(
@@ -103,7 +109,8 @@ func InsertPassenger(db *sql.DB, passenger *Passenger) (int, error) {
         passenger.SeatNumber,
         passenger.PhoneNumber,
         passenger.Email,
-        passenger.Dob,
+        dob,
+        passenger.Gender,
     ).Scan(&passengerID)
     if err != nil {
         return 0, fmt.Errorf("could not insert passenger: %v", err)
@@ -116,9 +123,19 @@ func InsertPassenger(db *sql.DB, passenger *Passenger) (int, error) {
 func UpdatePassenger(db *sql.DB, passenger *Passenger) error {
     query := `
     UPDATE passengers
-    SET booking_id = $1, citizen_id = $2, first_name = $3, last_name = $4, seat_number = $5, phone_number = $6, email = $7, dob = $8
-    WHERE passenger_id = $9
+    SET booking_id = $1,
+    citizen_id = $2,
+    first_name = $3,
+    last_name = $4,
+    seat_number = $5,
+    phone_number = $6,
+    email = $7,
+    dob = $8,
+    gender = $9
+    WHERE passenger_id = $10
     `
+
+    dob := passenger.Dob.Format(DOB_LAYOUT)
 
     _, err := db.Exec(query,
         passenger.BookingID,
@@ -128,11 +145,13 @@ func UpdatePassenger(db *sql.DB, passenger *Passenger) error {
         passenger.SeatNumber,
         passenger.PhoneNumber,
         passenger.Email,
-        passenger.Dob,
+        dob,
+        passenger.Gender,
         passenger.PassengerID,
     )
     if err != nil {
-        log.Fatalf("could not update passenger: %v", err)
+        log.Printf("could not update passenger: %v", err)
+        return err
     }
 
     return nil
@@ -144,7 +163,8 @@ func RemovePassenger(db *sql.DB, passengerID int) error {
 
     _, err := db.Exec(query, passengerID)
     if err != nil {
-        log.Fatalf("could not remove passenger: %v", err)
+        log.Printf("could not remove passenger: %v", err)
+        return err
     }
 
     return nil
@@ -152,7 +172,7 @@ func RemovePassenger(db *sql.DB, passengerID int) error {
 
 // GetAllPassengers retrieves all passengers from the 'passengers' table
 func GetAllPassengers(db *sql.DB) ([]Passenger, error) {
-    query := `SELECT passenger_id, booking_id, citizen_id, first_name, last_name, seat_number, phone_number, email, dob FROM passengers`
+    query := `SELECT passenger_id, booking_id, citizen_id, first_name, last_name, seat_number, phone_number, email, dob, gender FROM passengers`
 
     rows, err := db.Query(query)
     if err != nil {
@@ -160,7 +180,7 @@ func GetAllPassengers(db *sql.DB) ([]Passenger, error) {
     }
     defer rows.Close()
 
-    var passengers []Passenger
+    passengers := []Passenger{}
     for rows.Next() {
         var passenger Passenger
         if err := rows.Scan(
@@ -173,6 +193,52 @@ func GetAllPassengers(db *sql.DB) ([]Passenger, error) {
             &passenger.PhoneNumber,
             &passenger.Email,
             &passenger.Dob,
+            &passenger.Gender,
+        ); err != nil {
+            return nil, fmt.Errorf("could not get passengers: %v", err)
+        }
+        passengers = append(passengers, passenger)
+    }
+
+    return passengers, nil
+}
+
+// GetPassengersByBookingID retrieves all passengers of a specific booking
+func GetPassengersByBookingID(db *sql.DB, bookingID int) ([]Passenger, error) {
+    query := `SELECT
+        passenger_id,
+        booking_id,
+        citizen_id,
+        first_name,
+        last_name,
+        seat_number,
+        phone_number,
+        email,
+        dob,
+        gender
+    FROM passengers WHERE booking_id = $1
+    `
+
+    rows, err := db.Query(query, bookingID)
+    if err != nil {
+        return nil, fmt.Errorf("could not get passengers: %v", err)
+    }
+    defer rows.Close()
+
+    passengers := []Passenger{}
+    for rows.Next() {
+        var passenger Passenger
+        if err := rows.Scan(
+            &passenger.PassengerID,
+            &passenger.BookingID,
+            &passenger.CitizenID,
+            &passenger.FirstName,
+            &passenger.LastName,
+            &passenger.SeatNumber,
+            &passenger.PhoneNumber,
+            &passenger.Email,
+            &passenger.Dob,
+            &passenger.Gender,
         ); err != nil {
             return nil, fmt.Errorf("could not get passengers: %v", err)
         }
