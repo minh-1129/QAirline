@@ -95,7 +95,7 @@ func startServer(runDetached bool, useLocal bool, resetDB bool) (*sql.DB, error)
 }
 
 func main() {
-    db, err := startServer(false, true, true)
+    db, err := startServer(false, true, false)
     if err != nil {
         log.Printf("Error starting the server: %v\n", err)
         return

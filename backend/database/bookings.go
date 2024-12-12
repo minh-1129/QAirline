@@ -37,7 +37,7 @@ func CreateBookingsTable(db *sql.DB) error {
     `
     _, err := db.Exec(createTableQuery)
     if err != nil {
-        log.Printf("Failed to create 'bookings' table: %v", err)
+        log.Printf("Failed to create 'bookings' table: %v\n", err)
         return err
     }
 
@@ -58,7 +58,7 @@ func SetBookingsForeignKeys(db *sql.DB) error {
 
     _, err := db.Exec(query)
     if err != nil {
-        log.Printf("Failed to set foreign key constraint for 'bookings' table: %v", err)
+        log.Printf("Failed to set foreign key constraint for 'bookings' table: %v\n", err)
         return err
     }
 
@@ -269,7 +269,7 @@ func UpdateBooking(db *sql.DB, booking *Booking) error {
         booking.BookingID,
     )
     if err != nil {
-        log.Printf("could not update seat: %v", err)
+        log.Printf("could not update seat: %v\n", err)
         return err
     }
 
@@ -282,7 +282,7 @@ func RemoveBooking(db *sql.DB, seatID int) error {
 
     _, err := db.Exec(query, seatID)
     if err != nil {
-        log.Printf("could not remove seat: %v", err)
+        log.Printf("could not remove seat: %v\n", err)
         return err
     }
 

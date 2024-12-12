@@ -24,7 +24,7 @@ func getAllAirports(db *sql.DB) http.HandlerFunc {
         airports, err := database.GetAllAirports(db)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get airports: %v", err)
+            log.Printf("Failed to get airports: %v\n", err)
             return
         }
 
@@ -48,7 +48,7 @@ func getAirportByIATA(db *sql.DB) http.HandlerFunc {
         airport, err := database.GetAirportByIATA(db, iata)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get airports: %v", err)
+            log.Printf("Failed to get airports: %v\n", err)
             return
         }
 
@@ -72,7 +72,7 @@ func getAirportByICAO(db *sql.DB) http.HandlerFunc {
         airport, err := database.GetAirportByICAO(db, icao)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get airports: %v", err)
+            log.Printf("Failed to get airports: %v\n", err)
             return
         }
 
@@ -96,7 +96,7 @@ func getAirportByCity(db *sql.DB) http.HandlerFunc {
         airports, err := database.GetAirportByCity(db, city)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get airports: %v", err)
+            log.Printf("Failed to get airports: %v\n", err)
             return
         }
 
@@ -119,14 +119,14 @@ func getAirportByID(db *sql.DB) http.HandlerFunc {
         airportId, err := strconv.Atoi(airportIDStr)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get airports: %v", err)
+            log.Printf("Failed to get airports: %v\n", err)
             return
         }
 
         airport, err := database.GetAirportByID(db, airportId)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get airports: %v", err)
+            log.Printf("Failed to get airports: %v\n", err)
             return
         }
 

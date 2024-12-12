@@ -27,14 +27,14 @@ func CreateAircraft(db *sql.DB) http.HandlerFunc {
         err := json.NewDecoder(r.Body).Decode(&aircraft)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to create aircraft: %v", err)
+            log.Printf("Failed to create aircraft: %v\n", err)
             return
         }
 
         aircraftID, err := database.InsertAircraft(db, &aircraft)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to create aircraft: %v", err)
+            log.Printf("Failed to create aircraft: %v\n", err)
             return
         }
 
@@ -59,14 +59,14 @@ func GetAircraftByID(db *sql.DB) http.HandlerFunc {
 
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get aircraft: %v", err)
+            log.Printf("Failed to get aircraft: %v\n", err)
             return
         }
 
         aircraft, err := database.GetAircraftByID(db, aircraftID)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get aircraft: %v", err)
+            log.Printf("Failed to get aircraft: %v\n", err)
             return
         }
 
@@ -95,7 +95,7 @@ func GetAircraftsByAircraftType(db *sql.DB) http.HandlerFunc {
         aircraft, err := database.GetAircraftsByAircraftType(db, aircraftType)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get aircraft: %v", err)
+            log.Printf("Failed to get aircraft: %v\n", err)
             return
         }
 
@@ -120,7 +120,7 @@ func UpdateAircraft(db *sql.DB) http.HandlerFunc {
 
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": "Invalid aircraft ID"})
-            log.Printf("Failed to update aircraft: %v", err)
+            log.Printf("Failed to update aircraft: %v\n", err)
             return
         }
 
@@ -128,7 +128,7 @@ func UpdateAircraft(db *sql.DB) http.HandlerFunc {
         err = json.NewDecoder(r.Body).Decode(&aircraft)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to update aircraft: %v", err)
+            log.Printf("Failed to update aircraft: %v\n", err)
             return
         }
 
@@ -136,7 +136,7 @@ func UpdateAircraft(db *sql.DB) http.HandlerFunc {
         err = database.UpdateAircraft(db, &aircraft)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to update aircraft: %v", err)
+            log.Printf("Failed to update aircraft: %v\n", err)
             return
         }
 
@@ -160,14 +160,14 @@ func RemoveAircraft(db *sql.DB) http.HandlerFunc {
 
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to delete aircraft: %v", err)
+            log.Printf("Failed to delete aircraft: %v\n", err)
             return
         }
 
         err = database.RemoveAircraft(db, aircraftID)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to delete aircraft: %v", err)
+            log.Printf("Failed to delete aircraft: %v\n", err)
             return
         }
 
@@ -188,7 +188,7 @@ func GetAllAircrafts(db *sql.DB) http.HandlerFunc {
         aircrafts, err := database.GetAllAircrafts(db)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get aircrafts: %v", err)
+            log.Printf("Failed to get aircrafts: %v\n", err)
             return
         }
 
@@ -217,7 +217,7 @@ func GetAircraftsByAircraftManufacturer(db *sql.DB) http.HandlerFunc {
         aircrafts, err := database.GetAircraftsByAircraftManufacturer(db, aircraftManufacturer)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get aircrafts: %v", err)
+            log.Printf("Failed to get aircrafts: %v\n", err)
             return
         }
 
@@ -247,7 +247,7 @@ func GetAircraftsByCapacity(db *sql.DB) http.HandlerFunc {
         aircrafts, err := database.GetAircraftsByCapacity(db, capacity)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get aircrafts: %v", err)
+            log.Printf("Failed to get aircrafts: %v\n", err)
             return
         }
 
@@ -276,7 +276,7 @@ func GetAircraftsByAircraftName(db *sql.DB) http.HandlerFunc {
         aircrafts, err := database.GetAircraftsByAircraftName(db, aircraftName)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get aircrafts: %v", err)
+            log.Printf("Failed to get aircrafts: %v\n", err)
             return
         }
 

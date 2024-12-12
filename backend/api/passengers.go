@@ -1,15 +1,17 @@
 package api
 
 import (
-    "database/sql"
-    "encoding/json"
-    "fmt"
+	"database/sql"
+	"encoding/json"
+	"fmt"
+	"log"
 
-    // "fmt"
-    "net/http"
-    "strconv"
-    // "time"
-    "webserver/database"
+	// "fmt"
+	"net/http"
+	"strconv"
+
+	// "time"
+	"webserver/database"
 )
 
 // @Summary Create a passenger
@@ -27,14 +29,14 @@ func CreatePassenger(db *sql.DB) http.HandlerFunc {
         err := json.NewDecoder(r.Body).Decode(&passenger)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            fmt.Printf("Failed to create passenger: %v", err)
+            log.Printf("Failed to create passenger: %v\n", err)
             return
         }
 
         passengerID, err := database.InsertPassenger(db, &passenger)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            fmt.Printf("Failed to create passenger: %v", err)
+            log.Printf("Failed to create passenger: %v\n", err)
             return
         }
 
@@ -58,14 +60,14 @@ func GetPassengerByID(db *sql.DB) http.HandlerFunc {
         passengerID, err := strconv.Atoi(passengerIDStr)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            fmt.Printf("Failed to get passenger: %v", err)
+            log.Printf("Failed to get passenger: %v\n", err)
             return
         }
 
         passenger, err := database.GetPassengerByID(db, passengerID)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            fmt.Printf("Failed to get passenger: %v", err)
+            log.Printf("Failed to get passenger: %v\n", err)
             return
         }
 
@@ -89,7 +91,7 @@ func UpdatePassenger(db *sql.DB) http.HandlerFunc {
         passengerID, err := strconv.Atoi(passengerIDStr)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            fmt.Printf("Failed to update passenger: %v", err)
+            log.Printf("Failed to update passenger: %v\n", err)
             return
         }
 
@@ -97,7 +99,7 @@ func UpdatePassenger(db *sql.DB) http.HandlerFunc {
         err = json.NewDecoder(r.Body).Decode(&passenger)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            fmt.Printf("Failed to update passenger: %v", err)
+            log.Printf("Failed to update passenger: %v\n", err)
             return
         }
 
@@ -105,7 +107,7 @@ func UpdatePassenger(db *sql.DB) http.HandlerFunc {
         err = database.UpdatePassenger(db, &passenger)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            fmt.Printf("Failed to update passenger: %v", err)
+            log.Printf("Failed to update passenger: %v\n", err)
             return
         }
 
@@ -128,14 +130,14 @@ func RemovePassenger(db *sql.DB) http.HandlerFunc {
         passengerID, err := strconv.Atoi(passengerIDStr)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            fmt.Printf("Failed to remove passenger: %v", err)
+            log.Printf("Failed to remove passenger: %v\n", err)
             return
         }
 
         err = database.RemovePassenger(db, passengerID)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            fmt.Printf("Failed to remove passenger: %v", err)
+            log.Printf("Failed to remove passenger: %v\n", err)
             return
         }
 
@@ -156,7 +158,7 @@ func GetAllPassengers(db *sql.DB) http.HandlerFunc {
         passengers, err := database.GetAllPassengers(db)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            fmt.Printf("Failed to get passengers: %v", err)
+            log.Printf("Failed to get passengers: %v\n", err)
             return
         }
 
@@ -179,14 +181,14 @@ func GetPassengersByBookingID(db *sql.DB) http.HandlerFunc {
         bookingID, err := strconv.Atoi(bookingIDStr)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            fmt.Printf("Failed to get passengers: %v", err)
+            log.Printf("Failed to get passengers: %v\n", err)
             return
         }
 
         passengers, err := database.GetPassengersByBookingID(db, bookingID)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            fmt.Printf("Failed to get passengers: %v", err)
+            log.Printf("Failed to get passengers: %v\n", err)
             return
         }
 

@@ -45,7 +45,7 @@ func CreateFlightsTable(db *sql.DB) error {
     `
     _, err := db.Exec(createTableQuery)
     if err != nil {
-        log.Printf("Failed to create 'flights' table: %v", err)
+        log.Printf("Failed to create 'flights' table: %v\n", err)
         return err
     }
 
@@ -62,7 +62,7 @@ func SetFlightsForeignKeys(db *sql.DB) error {
 
     _, err := db.Exec(query)
     if err != nil {
-        log.Printf("Failed to set foreign key constraint for 'flights' table: %v", err)
+        log.Printf("Failed to set foreign key constraint for 'flights' table: %v\n", err)
         return err
     }
 
@@ -102,7 +102,7 @@ func GetFlightByID(db *sql.DB, flightID int) (*Flight, error) {
         &flight.BoardTime,
     )
     if err != nil {
-        log.Printf("could not scan flight: %v", err)
+        log.Printf("could not scan flight: %v\n", err)
         return nil, err
     }
 
@@ -128,7 +128,7 @@ func GetFlightByFlightNumber(db *sql.DB, flightNumber string) ([]Flight, error) 
 
     row, err := db.Query(query, flightNumber)
     if err != nil {
-        log.Printf("could not query flight: %v", err)
+        log.Printf("could not query flight: %v\n", err)
         return []Flight{}, err
     }
     defer row.Close()
@@ -149,7 +149,7 @@ func GetFlightByFlightNumber(db *sql.DB, flightNumber string) ([]Flight, error) 
             &flight.BoardTime,
         )
         if err != nil {
-            log.Printf("could not scan flight: %v", err)
+            log.Printf("could not scan flight: %v\n", err)
             return []Flight{}, err
         }
 
@@ -189,7 +189,7 @@ func InsertFlight(db *sql.DB, flight *Flight) (int, error) {
         flight.BoardTime,
     ).Scan(&flightID)
     if err != nil {
-        log.Printf("could not insert flight: %v", err)
+        log.Printf("could not insert flight: %v\n", err)
         return 0, err
     }
 
@@ -226,7 +226,7 @@ func UpdateFlight(db *sql.DB, flight *Flight) error {
         flight.FlightID,
     )
     if err != nil {
-        log.Printf("could not update flight: %v", err)
+        log.Printf("could not update flight: %v\n", err)
         return err
     }
 
@@ -239,7 +239,7 @@ func RemoveFlight(db *sql.DB, flightID int) error {
 
     _, err := db.Exec(query, flightID)
     if err != nil {
-        log.Printf("could not remove flight: %v", err)
+        log.Printf("could not remove flight: %v\n", err)
         return err
     }
 
@@ -265,7 +265,7 @@ func GetAllFlights(db *sql.DB) ([]Flight, error) {
 
     rows, err := db.Query(query)
     if err != nil {
-        log.Printf("could not query flights: %v", err)
+        log.Printf("could not query flights: %v\n", err)
         return []Flight{}, err
     }
     defer rows.Close()
@@ -286,7 +286,7 @@ func GetAllFlights(db *sql.DB) ([]Flight, error) {
             &flight.BoardTime,
         )
         if err != nil {
-            log.Printf("could not scan flight: %v", err)
+            log.Printf("could not scan flight: %v\n", err)
             return []Flight{}, err
         }
 
@@ -315,7 +315,7 @@ func GetFlightsByDeAndArrAirport(db *sql.DB, departureAirport string, arrivalAir
 
     rows, err := db.Query(query, departureAirport, arrivalAirport)
     if err != nil {
-        log.Printf("could not query flights: %v", err)
+        log.Printf("could not query flights: %v\n", err)
         return []Flight{}, err
     }
     defer rows.Close()
@@ -336,7 +336,7 @@ func GetFlightsByDeAndArrAirport(db *sql.DB, departureAirport string, arrivalAir
             &flight.BoardTime,
         )
         if err != nil {
-            log.Printf("could not scan flight: %v", err)
+            log.Printf("could not scan flight: %v\n", err)
             return []Flight{}, err
         }
 
@@ -365,7 +365,7 @@ func GetFlightsByDeAndArrAirportAndDepTime(db *sql.DB, departureAirport string, 
 
     rows, err := db.Query(query, departureAirport, arrivalAirport, departureTime)
     if err != nil {
-        log.Printf("could not query flights: %v", err)
+        log.Printf("could not query flights: %v\n", err)
         return []Flight{}, err
     }
     defer rows.Close()
@@ -386,7 +386,7 @@ func GetFlightsByDeAndArrAirportAndDepTime(db *sql.DB, departureAirport string, 
             &flight.BoardTime,
         )
         if err != nil {
-            log.Printf("could not scan flight: %v", err)
+            log.Printf("could not scan flight: %v\n", err)
             return []Flight{}, err
         }
 
@@ -403,14 +403,14 @@ func GetRoundTripFlightsByDeAndArrAirportAndTime(db *sql.DB, departureAirport st
     // Departure flights
     departureFlights, err := GetFlightsByDeAndArrAirportAndDepTime(db, departureAirport, arrivalAirport, departureTime)
     if err != nil {
-        log.Printf("could not query departure flights: %v", err)
+        log.Printf("could not query departure flights: %v\n", err)
         return []Flight{}, []Flight{}, err
     }
 
     // Return flights
     returnFlights, err := GetFlightsByDeAndArrAirportAndDepTime(db, arrivalAirport, departureAirport, returnTime)
     if err != nil {
-        log.Printf("could not query return flights: %v", err)
+        log.Printf("could not query return flights: %v\n", err)
         return []Flight{}, []Flight{}, err
     }
 

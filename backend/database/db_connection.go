@@ -51,7 +51,7 @@ func CreateConnection(useLocal bool) (*sql.DB, error) {
 // CloseConnection closes the database connection
 func CloseConnection(db *sql.DB) error {
     if err := db.Close(); err != nil {
-        log.Printf("Error closing database connection: %v", err)
+        log.Printf("Error closing database connection: %v\n", err)
         return err
     } else {
         fmt.Println("Database connection closed")

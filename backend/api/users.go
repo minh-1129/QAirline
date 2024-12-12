@@ -29,14 +29,14 @@ func CreateUser(db *sql.DB) http.HandlerFunc {
         err := json.NewDecoder(r.Body).Decode(&user)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to create user: %v", err)
+            log.Printf("Failed to create user: %v\n", err)
             return
         }
 
         userID, err := database.InsertUser(db, &user)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to create user: %v", err)
+            log.Printf("Failed to create user: %v\n", err)
             return
         }
 
@@ -61,14 +61,14 @@ func GetUserByID(db *sql.DB) http.HandlerFunc {
 
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get user: %v", err)
+            log.Printf("Failed to get user: %v\n", err)
             return
         }
 
         user, err := database.GetUserByID(db, userID)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get user: %v", err)
+            log.Printf("Failed to get user: %v\n", err)
             return
         }
 
@@ -92,7 +92,7 @@ func GetUserByCitizenID(db *sql.DB) http.HandlerFunc {
         user, err := database.GetUserByCitizenID(db, citizenID)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get user: %v", err)
+            log.Printf("Failed to get user: %v\n", err)
             return
         }
 
@@ -116,7 +116,7 @@ func UpdateUserByID(db *sql.DB) http.HandlerFunc {
         userID, err := strconv.Atoi(userIDStr)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to update user: %v", err)
+            log.Printf("Failed to update user: %v\n", err)
             return
         }
 
@@ -124,7 +124,7 @@ func UpdateUserByID(db *sql.DB) http.HandlerFunc {
         err = json.NewDecoder(r.Body).Decode(&user)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to update user: %v", err)
+            log.Printf("Failed to update user: %v\n", err)
             return
         }
 
@@ -132,7 +132,7 @@ func UpdateUserByID(db *sql.DB) http.HandlerFunc {
         err = database.UpdateUser(db, &user)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to update user: %v", err)
+            log.Printf("Failed to update user: %v\n", err)
             return
         }
 
@@ -155,14 +155,14 @@ func RemoveUserByID(db *sql.DB) http.HandlerFunc {
         userID, err := strconv.Atoi(userIDStr)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to delete user: %v", err)
+            log.Printf("Failed to delete user: %v\n", err)
             return
         }
 
         err = database.RemoveUser(db, userID)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to delete user: %v", err)
+            log.Printf("Failed to delete user: %v\n", err)
             return
         }
 
@@ -183,7 +183,7 @@ func GetAllUsers(db *sql.DB) http.HandlerFunc {
         users, err := database.GetAllUsers(db)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get users: %v", err)
+            log.Printf("Failed to get users: %v\n", err)
             return
         }
 

@@ -33,7 +33,7 @@ func CreateAircraftsTable(db *sql.DB) error {
     `
     _, err := db.Exec(createTableQuery)
     if err != nil {
-        log.Printf("Failed to create 'aircrafts' table: %v", err)
+        log.Printf("Failed to create 'aircrafts' table: %v\n", err)
         return err
     }
 
@@ -76,7 +76,7 @@ func UpdateAircraft(db *sql.DB, aircraft *Aircraft) error {
 
     _, err := db.Exec(query, aircraft.AircraftManufacturer, aircraft.AircraftType, aircraft.AircraftName, aircraft.Capacity, aircraft.AircraftID)
     if err != nil {
-        log.Printf("could not update aircraft: %v", err)
+        log.Printf("could not update aircraft: %v\n", err)
         return err
     }
 
@@ -89,7 +89,7 @@ func RemoveAircraft(db *sql.DB, aircraftID int) error {
 
     _, err := db.Exec(query, aircraftID)
     if err != nil {
-        log.Printf("could not remove aircraft: %v", err)
+        log.Printf("could not remove aircraft: %v\n", err)
         return err
     }
 

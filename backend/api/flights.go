@@ -29,7 +29,7 @@ func GetAllFlights(db *sql.DB) http.HandlerFunc {
         flights, err := database.GetAllFlights(db)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get flights: %v", err)
+            log.Printf("Failed to get flights: %v\n", err)
             return
         }
 
@@ -53,14 +53,14 @@ func CreateFlight(db *sql.DB) http.HandlerFunc {
         var flight database.Flight
         if err := json.NewDecoder(r.Body).Decode(&flight); err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to create flight: %v", err)
+            log.Printf("Failed to create flight: %v\n", err)
             return
         }
 
         flightID, err := database.InsertFlight(db, &flight)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to create flight: %v", err)
+            log.Printf("Failed to create flight: %v\n", err)
             return
         }
 
@@ -89,14 +89,14 @@ func GetFlightByID(db *sql.DB) http.HandlerFunc {
 
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": "Invalid flight ID"})
-            log.Printf("Failed to get flight: %v", err)
+            log.Printf("Failed to get flight: %v\n", err)
             return
         }
 
         flight, err := database.GetFlightByID(db, flightID)
         if err != nil {
             respondWithJSON(r, w, http.StatusNotFound, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get flight: %v", err)
+            log.Printf("Failed to get flight: %v\n", err)
             return
         }
 
@@ -126,7 +126,7 @@ func GetFlightsByFlightNumber(db *sql.DB) http.HandlerFunc {
         flights, err := database.GetFlightByFlightNumber(db, flightNumber)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get flight: %v", err)
+            log.Printf("Failed to get flight: %v\n", err)
             return
         }
 
@@ -153,7 +153,7 @@ func UpdateFlight(db *sql.DB) http.HandlerFunc {
         flightID, err := strconv.Atoi(flightIDStr)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": "Invalid flight ID"})
-            log.Printf("Failed to update flight: %v", err)
+            log.Printf("Failed to update flight: %v\n", err)
             return
         }
 
@@ -161,7 +161,7 @@ func UpdateFlight(db *sql.DB) http.HandlerFunc {
         var flight database.Flight
         if err := json.NewDecoder(r.Body).Decode(&flight); err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to update flight: %v", err)
+            log.Printf("Failed to update flight: %v\n", err)
             return
         }
         flight.FlightID = flightID
@@ -170,7 +170,7 @@ func UpdateFlight(db *sql.DB) http.HandlerFunc {
         err = database.UpdateFlight(db, &flight)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to update flight: %v", err)
+            log.Printf("Failed to update flight: %v\n", err)
             return
         }
 
@@ -197,7 +197,7 @@ func RemoveFlight(db *sql.DB) http.HandlerFunc {
         flightID, err := strconv.Atoi(flightIDStr)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to remove flight: %v", err)
+            log.Printf("Failed to remove flight: %v\n", err)
             return
         }
 
@@ -205,7 +205,7 @@ func RemoveFlight(db *sql.DB) http.HandlerFunc {
         err = database.RemoveFlight(db, flightID)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to remove flight: %v", err)
+            log.Printf("Failed to remove flight: %v\n", err)
             return
         }
 
@@ -234,7 +234,7 @@ func GetFlightsByDeAndArrAirport(db *sql.DB) http.HandlerFunc {
         flights, err := database.GetFlightsByDeAndArrAirport(db, departureAirport, arrivalAirport)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get flights: %v", err)
+            log.Printf("Failed to get flights: %v\n", err)
             return
         }
 
@@ -269,14 +269,14 @@ func GetFlightsByDeAndArrAirportAndDepTime(db *sql.DB) http.HandlerFunc {
         departureTime, err := time.Parse(time.RFC3339, departureTimeStr)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get flights: %v", err)
+            log.Printf("Failed to get flights: %v\n", err)
             return
         }
 
         flights, err := database.GetFlightsByDeAndArrAirportAndDepTime(db, departureAirport, arrivalAirport, departureTime)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get flights: %v", err)
+            log.Printf("Failed to get flights: %v\n", err)
             return
         }
 
@@ -313,21 +313,21 @@ func GetRoundTripFlightsByDeAndArrAirportAndTime(db *sql.DB) http.HandlerFunc {
         departureTime, err := time.Parse(database.TIME_LAYOUT, departureTimeStr)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get flights: %v", err)
+            log.Printf("Failed to get flights: %v\n", err)
             return
         }
 
         returnTime, err := time.Parse(database.TIME_LAYOUT, returnTimeStr)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get flights: %v", err)
+            log.Printf("Failed to get flights: %v\n", err)
             return
         }
 
         departingFlights, returnFlights, err := database.GetRoundTripFlightsByDeAndArrAirportAndTime(db, departureAirport, arrivalAirport, departureTime, returnTime)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get flights: %v", err)
+            log.Printf("Failed to get flights: %v\n", err)
             return
         }
 

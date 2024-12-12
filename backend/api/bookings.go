@@ -30,14 +30,14 @@ func CreateBooking(db *sql.DB) http.HandlerFunc {
         err := json.NewDecoder(r.Body).Decode(&booking)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to create booking: %v", err)
+            log.Printf("Failed to create booking: %v\n", err)
             return
         }
 
         bookingID, err := database.InsertBooking(db, &booking)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to create booking: %v", err)
+            log.Printf("Failed to create booking: %v\n", err)
             return
         }
 
@@ -62,14 +62,14 @@ func GetBookingByID(db *sql.DB) http.HandlerFunc {
 
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get booking: %v", err)
+            log.Printf("Failed to get booking: %v\n", err)
             return
         }
 
         booking, err := database.GetBookingByID(db, bookingID)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get booking: %v", err)
+            log.Printf("Failed to get booking: %v\n", err)
             return
         }
 
@@ -93,14 +93,14 @@ func GetBookingByFlightID(db *sql.DB) http.HandlerFunc {
 
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get booking: %v", err)
+            log.Printf("Failed to get booking: %v\n", err)
             return
         }
 
         bookings, err := database.GetBookingByFlightID(db, flightID)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get booking: %v", err)
+            log.Printf("Failed to get booking: %v\n", err)
             return
         }
 
@@ -129,7 +129,7 @@ func GetBookingByCitizenID(db *sql.DB) http.HandlerFunc {
         bookings, err := database.GetBookingByCitizenID(db, citizenID)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get booking: %v", err)
+            log.Printf("Failed to get booking: %v\n", err)
             return
         }
 
@@ -154,7 +154,7 @@ func UpdateBooking(db *sql.DB) http.HandlerFunc {
         bookingID, err := strconv.Atoi(bookingIDStr)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to update booking: %v", err)
+            log.Printf("Failed to update booking: %v\n", err)
             return
         }
 
@@ -162,7 +162,7 @@ func UpdateBooking(db *sql.DB) http.HandlerFunc {
         err = json.NewDecoder(r.Body).Decode(&booking)
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to update booking: %v", err)
+            log.Printf("Failed to update booking: %v\n", err)
             return
         }
         booking.BookingID = bookingID
@@ -170,7 +170,7 @@ func UpdateBooking(db *sql.DB) http.HandlerFunc {
         err = database.UpdateBooking(db, &booking)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to update booking: %v", err)
+            log.Printf("Failed to update booking: %v\n", err)
             return
         }
 
@@ -194,14 +194,14 @@ func DeleteBooking(db *sql.DB) http.HandlerFunc {
 
         if err != nil {
             respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
-            log.Printf("Failed to delete booking: %v", err)
+            log.Printf("Failed to delete booking: %v\n", err)
             return
         }
 
         err = database.RemoveBooking(db, bookingID)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to delete booking: %v", err)
+            log.Printf("Failed to delete booking: %v\n", err)
             return
         }
 
@@ -222,7 +222,7 @@ func GetAllBookings(db *sql.DB) http.HandlerFunc {
         bookings, err := database.GetAllBookings(db)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-            log.Printf("Failed to get bookings: %v", err)
+            log.Printf("Failed to get bookings: %v\n", err)
             return
         }
 

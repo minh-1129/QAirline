@@ -16,7 +16,7 @@ func DropTable(db *sql.DB, tableName string) error {
     query := fmt.Sprintf("DROP TABLE IF EXISTS %s;", tableName)
     _, err := db.Exec(query)
     if err != nil {
-        log.Printf("Failed to drop table '%s': %v", tableName, err)
+        log.Printf("Failed to drop table '%s': %v\n", tableName, err)
         return err
     }
 
@@ -28,7 +28,7 @@ func ForceDropTable(db *sql.DB, tableName string) error {
     query := fmt.Sprintf("DROP TABLE IF EXISTS %s CASCADE;", tableName)
     _, err := db.Exec(query)
     if err != nil {
-        log.Printf("Failed to drop table '%s': %v", tableName, err)
+        log.Printf("Failed to drop table '%s': %v\n", tableName, err)
         return err
     }
 

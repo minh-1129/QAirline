@@ -41,7 +41,7 @@ func CreatePassengersTable(db *sql.DB) error {
     `
     _, err := db.Exec(createTableQuery)
     if err != nil {
-        log.Printf("Failed to create 'passengers' table: %v", err)
+        log.Printf("Failed to create 'passengers' table: %v\n", err)
         return err
     }
 
@@ -58,7 +58,7 @@ func SetPassengersForeignKeys(db *sql.DB) error {
 
     _, err := db.Exec(query)
     if err != nil {
-        log.Printf("Failed to set foreign key constraint for 'passengers' table: %v", err)
+        log.Printf("Failed to set foreign key constraint for 'passengers' table: %v\n", err)
         return err
     }
 
@@ -150,7 +150,7 @@ func UpdatePassenger(db *sql.DB, passenger *Passenger) error {
         passenger.PassengerID,
     )
     if err != nil {
-        log.Printf("could not update passenger: %v", err)
+        log.Printf("could not update passenger: %v\n", err)
         return err
     }
 
@@ -163,7 +163,7 @@ func RemovePassenger(db *sql.DB, passengerID int) error {
 
     _, err := db.Exec(query, passengerID)
     if err != nil {
-        log.Printf("could not remove passenger: %v", err)
+        log.Printf("could not remove passenger: %v\n", err)
         return err
     }
 
