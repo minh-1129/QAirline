@@ -33,6 +33,10 @@ const (
 func respondWithJSON(r *http.Request, w http.ResponseWriter, status int, data interface{}) {
     w.Header().Set("Content-Type", "application/json")
     w.Header().Add("Access-Control-Allow-Origin", "*")
+    w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
+    w.Header().Add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, Content-Length, Accept-Encoding, X-CSRF-Token, X-Api-Key")
+    w.Header().Set("Content-Security-Policy", "default-src 'self';")
+
     w.WriteHeader(status)
     // Beautify the JSON with MarshalIndent
     response, err := json.MarshalIndent(data, "", "    ")
@@ -64,6 +68,11 @@ func GetJoinedPath(paths ...string) string {
     return url.JoinPath(paths...).Path
 }
 
+// Validate authentication
+func HandleAuth(next http.HandlerFunc) http.HandlerFunc {
+
+}
+
 // RegisterRoutes initializes all routes
 func RegisterRoutes(db *sql.DB) {
     // Register the Swagger UI
@@ -77,10 +86,8 @@ func RegisterRoutes(db *sql.DB) {
 
     // Register the API routes
     http.HandleFunc(
-        GetJoinedPath(API_BASE_URL, "/"),
-        func(w http.ResponseWriter, r *http.Request) {
-            respondWithJSON(r, w, http.StatusOK, map[string]string{"message": "hello world"})
-        },
+        "/",
+        GetAuth,
     )
 
     // Register all database components
