@@ -1,0 +1,28 @@
+{
+  "regions": [
+      {
+          "name": "VIET NAM",
+          "destinations": [
+              { "city": "Ha Noi", "code": "HAN", "country": "Vietnam" },
+              { "city": "Ho Chi Minh", "code": "SGN", "country": "Vietnam" },
+              { "city": "Da Nang", "code": "DAD", "country": "Vietnam" },
+              { "city": "Phu Quoc", "code": "PQC", "country": "Vietnam" },
+              { "city": "Nha Trang", "code": "CXR", "country": "Vietnam" }
+          ]
+      },
+      {
+          "name": "NORTH EAST ASIA",
+          "destinations": [
+              { "city": "Seoul", "code": "ICN", "country": "Korea" },
+              { "city": "Busan", "code": "PUS", "country": "Korea" },
+              { "city": "Thanh Do", "code": "CTU", "country": "China" },
+              { "city": "Ga Dongdaegu", "code": "XDK", "country": "Korea" },
+              { "city": "Ga Gwangju-Seonjeong", "code": "XNJ", "country": "Korea" },
+              { "city": "Ga Jinju", "code": "XJJ", "country": "Korea" },
+              { "city": "Ga Mokpo", "code": "XKK", "country": "Korea" },
+              { "city": "Ga Pohang", "code": "XPB", "country": "Korea" },
+              { "city": "Ga Ulsan", "code": "XLF", "country": "Korea" }
+          ]
+      }
+  ]
+}
