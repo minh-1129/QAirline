@@ -1,0 +1,41 @@
+services:
+  webserver:
+    build:
+      context: .
+      dockerfile: app_Dockerfile
+      platforms:
+        - linux/amd64
+        - linux/arm64
+    ports:
+      - "1803:1803"
+    restart: unless-stopped
+    environment:
+      - APP_ENV=production
+      - DB_HOST=db
+      - DB_PORT=1802
+      - DB_USER=youruser
+      - DB_PASSWORD=yourpassword
+      - DB_NAME=yourdb
+    volumes:
+      - ./app:/app
+      - go-mod-volume:/go/pkg/mod
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: qairline
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    ports:
+      - "1802:1802"
+    command:
+      -p 1802
+
+volumes:
+  go-mod-volume:
+  postgres-data:
