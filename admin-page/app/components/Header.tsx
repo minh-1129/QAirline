@@ -53,6 +53,16 @@ export default function Header() {
         >
           Flight
         </Link>
+        <Link
+          href="/log-in"
+          style={
+            pathname === "/log-in"
+              ? { ...styles.link, ...styles.activeLink }
+              : styles.link
+          }
+        >
+          Log In
+        </Link>
       </div>
     </nav>
   );
