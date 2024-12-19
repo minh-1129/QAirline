@@ -1,5 +1,5 @@
-import Header from "@/app/components/Header";
-import Hero from "@/app/components/Hero";
+import Header from "@/components/custom/Header";
+import Hero from "@/components/custom/Hero";
 import SearchTabs from "./components/SearchTabs/SearchTabs";
 
 export default function Home() {

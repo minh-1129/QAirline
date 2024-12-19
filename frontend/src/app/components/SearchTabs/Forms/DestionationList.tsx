@@ -1,11 +1,11 @@
 import locationsData from '@/data/locations.json'
-import { LocationProps, RegionProps, locationToString } from "./types/location";
+import { RegionProps, LocationProps, locationToString } from "./types/location";
 
 const allRegions: RegionProps[] = locationsData["regions"];
 
 type DestinationListProps = {
   regionIndex: number
-  onSelectDestination: (destination: { city: string; code: string; country: string }) => void
+  onSelectDestination: (destination: LocationProps) => void
   otherValue?: string
 }
 

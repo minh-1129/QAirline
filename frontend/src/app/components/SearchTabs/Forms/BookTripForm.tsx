@@ -1,9 +1,10 @@
 "use client";
-import { useState, createContext } from "react";
+import { useState } from "react";
 import LocationSelector from "./LocationSelector";
-import { LocationProps, RegionProps, locationToString } from "./types/location";
+import { LocationProps,  locationToString } from "./types/location";
 import { DateSelector } from "./DateSelector";
 import { useRouter } from "next/navigation";
+
 type LocationSelectorProps = {
   label: string;
   placeholder: string;
@@ -11,13 +12,19 @@ type LocationSelectorProps = {
   otherValue?: string;
   onChange: (value: LocationProps | null) => void;
 };
+
 export default function BookTripForm() {
   const [fromLocation, setFromLocation] = useState<LocationProps>();
   const [toLocation, setToLocation] = useState<LocationProps>();
   const [returnDate, setReturnDate] = useState<Date | undefined>();
   const [departureDate, setDepartureDate] = useState<Date | undefined>();
+  const [tripType, setTripType] = useState("one-way");
+
   const router = useRouter();
-  
+
+
+
+
   const handleSubmit = async () => {
     const flightSearchData = {
       fromLocation,
@@ -26,11 +33,19 @@ export default function BookTripForm() {
       returnDate: returnDate?.toISOString(),
     }
     sessionStorage.setItem("flightSearchData", JSON.stringify(flightSearchData));
-    router.push("/flights");
+    
+    router.push('/booking')
 
   };
+  
+
+
+
   return (
-    <div className="border bg-white">
+    <div className="bg-white p-6 rounded-lg shadow-md">
+      <h2 className="text-2xl font-semibold text-[#1B3168] mb-6">
+        Where would you like to go?
+      </h2>
       <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <LocationSelector
           label="From"

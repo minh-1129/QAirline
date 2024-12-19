@@ -1,28 +1,73 @@
 {
   "regions": [
-      {
-          "name": "VIET NAM",
-          "destinations": [
-              { "city": "Ha Noi", "code": "HAN", "country": "Vietnam" },
-              { "city": "Ho Chi Minh", "code": "SGN", "country": "Vietnam" },
-              { "city": "Da Nang", "code": "DAD", "country": "Vietnam" },
-              { "city": "Phu Quoc", "code": "PQC", "country": "Vietnam" },
-              { "city": "Nha Trang", "code": "CXR", "country": "Vietnam" }
-          ]
-      },
-      {
-          "name": "NORTH EAST ASIA",
-          "destinations": [
-              { "city": "Seoul", "code": "ICN", "country": "Korea" },
-              { "city": "Busan", "code": "PUS", "country": "Korea" },
-              { "city": "Thanh Do", "code": "CTU", "country": "China" },
-              { "city": "Ga Dongdaegu", "code": "XDK", "country": "Korea" },
-              { "city": "Ga Gwangju-Seonjeong", "code": "XNJ", "country": "Korea" },
-              { "city": "Ga Jinju", "code": "XJJ", "country": "Korea" },
-              { "city": "Ga Mokpo", "code": "XKK", "country": "Korea" },
-              { "city": "Ga Pohang", "code": "XPB", "country": "Korea" },
-              { "city": "Ga Ulsan", "code": "XLF", "country": "Korea" }
-          ]
-      }
+    {
+      "name": "VIETNAM",
+      "destinations": [
+        { "city": "Hanoi", "code": "HAN", "country": "Vietnam", "timezone": "Asia/Ho_Chi_Minh" },
+        { "city": "Ho Chi Minh City", "code": "SGN", "country": "Vietnam", "timezone": "Asia/Ho_Chi_Minh" },
+        { "city": "Da Nang", "code": "DAD", "country": "Vietnam", "timezone": "Asia/Ho_Chi_Minh" },
+        { "city": "Phu Quoc", "code": "PQC", "country": "Vietnam", "timezone": "Asia/Ho_Chi_Minh" },
+        { "city": "Nha Trang", "code": "CXR", "country": "Vietnam", "timezone": "Asia/Ho_Chi_Minh" },
+        { "city": "Can Tho", "code": "VCA", "country": "Vietnam", "timezone": "Asia/Ho_Chi_Minh" },
+        { "city": "Hue", "code": "HUI", "country": "Vietnam", "timezone": "Asia/Ho_Chi_Minh" },
+        { "city": "Vinh", "code": "VII", "country": "Vietnam", "timezone": "Asia/Ho_Chi_Minh" },
+        { "city": "Buon Ma Thuot", "code": "BMV", "country": "Vietnam", "timezone": "Asia/Ho_Chi_Minh" },
+        { "city": "Chu Lai", "code": "VCL", "country": "Vietnam", "timezone": "Asia/Ho_Chi_Minh" },
+        { "city": "Thanh Hoa", "code": "THD", "country": "Vietnam", "timezone": "Asia/Ho_Chi_Minh" },
+        { "city": "Dien Bien Phu", "code": "DIN", "country": "Vietnam", "timezone": "Asia/Ho_Chi_Minh" },
+        { "city": "Rach Gia", "code": "VKG", "country": "Vietnam", "timezone": "Asia/Ho_Chi_Minh" },
+        { "city": "Quy Nhon", "code": "UIH", "country": "Vietnam", "timezone": "Asia/Ho_Chi_Minh" },
+        { "city": "Ca Mau", "code": "CAH", "country": "Vietnam", "timezone": "Asia/Ho_Chi_Minh" },
+        { "city": "Con Dao", "code": "VCS", "country": "Vietnam", "timezone": "Asia/Ho_Chi_Minh" },
+        { "city": "Dong Hoi", "code": "VDH", "country": "Vietnam", "timezone": "Asia/Ho_Chi_Minh" },
+        { "city": "Tuy Hoa", "code": "TBB", "country": "Vietnam", "timezone": "Asia/Ho_Chi_Minh" },
+        { "city": "Pleiku", "code": "PXU", "country": "Vietnam", "timezone": "Asia/Ho_Chi_Minh" },
+        { "city": "Lai Chau", "code": "VVN", "country": "Vietnam", "timezone": "Asia/Ho_Chi_Minh" }
+      ]
+    },
+    {
+      "name": "NORTH EAST ASIA",
+      "destinations": [
+        { "city": "Seoul (Incheon)", "code": "ICN", "country": "Korea", "timezone": "Asia/Seoul" },
+        { "city": "Seoul (Gimpo)", "code": "GMP", "country": "Korea", "timezone": "Asia/Seoul" },
+        { "city": "Busan", "code": "PUS", "country": "Korea", "timezone": "Asia/Seoul" },
+        { "city": "Jeju", "code": "CJU", "country": "Korea", "timezone": "Asia/Seoul" },
+        { "city": "Daegu", "code": "TAE", "country": "Korea", "timezone": "Asia/Seoul" },
+        { "city": "Gwangju", "code": "KWJ", "country": "Korea", "timezone": "Asia/Seoul" },
+        { "city": "Ulsan", "code": "USN", "country": "Korea", "timezone": "Asia/Seoul" },
+        { "city": "Pohang", "code": "KPO", "country": "Korea", "timezone": "Asia/Seoul" },
+        { "city": "Wonju", "code": "WJU", "country": "Korea", "timezone": "Asia/Seoul" },
+        { "city": "Yangyang", "code": "YNY", "country": "Korea", "timezone": "Asia/Seoul" },
+        { "city": "Yeosu", "code": "RSU", "country": "Korea", "timezone": "Asia/Seoul" },
+        { "city": "Beijing", "code": "PEK", "country": "China", "timezone": "Asia/Shanghai" },
+        { "city": "Shanghai", "code": "PVG", "country": "China", "timezone": "Asia/Shanghai" },
+        { "city": "Tokyo (Narita)", "code": "NRT", "country": "Japan", "timezone": "Asia/Tokyo" },
+        { "city": "Tokyo (Haneda)", "code": "HND", "country": "Japan", "timezone": "Asia/Tokyo" },
+        { "city": "Osaka", "code": "KIX", "country": "Japan", "timezone": "Asia/Tokyo" },
+        { "city": "Fukuoka", "code": "FUK", "country": "Japan", "timezone": "Asia/Tokyo" }
+      ]
+    },
+    {
+      "name": "SOUTHEAST ASIA",
+      "destinations": [
+        { "city": "Bangkok", "code": "BKK", "country": "Thailand", "timezone": "Asia/Bangkok" },
+        { "city": "Singapore", "code": "SIN", "country": "Singapore", "timezone": "Asia/Singapore" },
+        { "city": "Kuala Lumpur", "code": "KUL", "country": "Malaysia", "timezone": "Asia/Kuala_Lumpur" },
+        { "city": "Jakarta", "code": "CGK", "country": "Indonesia", "timezone": "Asia/Jakarta" },
+        { "city": "Manila", "code": "MNL", "country": "Philippines", "timezone": "Asia/Manila" },
+        { "city": "Yangon", "code": "RGN", "country": "Myanmar", "timezone": "Asia/Yangon" }
+      ]
+    },
+    {
+      "name": "OTHERS",
+      "destinations": [
+        { "city": "Sydney", "code": "SYD", "country": "Australia", "timezone": "Australia/Sydney" },
+        { "city": "Los Angeles", "code": "LAX", "country": "USA", "timezone": "America/Los_Angeles" },
+        { "city": "New York", "code": "JFK", "country": "USA", "timezone": "America/New_York" },
+        { "city": "Paris", "code": "CDG", "country": "France", "timezone": "Europe/Paris" },
+        { "city": "London", "code": "LHR", "country": "United Kingdom", "timezone": "Europe/London" },
+        { "city": "Dubai", "code": "DXB", "country": "UAE", "timezone": "Asia/Dubai" }
+      ]
+    }
   ]
 }

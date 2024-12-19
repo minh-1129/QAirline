@@ -91,7 +91,7 @@ export default function LocationSelector({
           onChange={handleInputChange}
           onFocus={() => setShowDropdown(true)}
           placeholder={placeholder}
-          className="h-12 pr-8"
+          className="h-10 pr-8"
         />
         {inputString && (
           <button
