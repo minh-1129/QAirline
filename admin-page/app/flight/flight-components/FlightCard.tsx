@@ -3,8 +3,10 @@ import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import planeSymbol from "../../images/black-plane.png";
+import EditFlight from "./EditFlight";
 
 interface FlightDetails {
+  flight_id: number;
   aircraftId: number;
   arrivalAirport: string;
   arrivalTime: string;
@@ -14,7 +16,9 @@ interface FlightDetails {
   flightNumber: string;
   gate: string;
   status: string;
+  price: number;
   airportsList;
+  handleRemoveFlight: (flightId) => void;
 }
 
 function FlightCard(props: FlightDetails) {
@@ -46,14 +50,6 @@ function FlightCard(props: FlightDetails) {
     }
   }
 
-  function handleDelayFlight() {
-    console.log("delay");
-  }
-
-  function handleRemoveFlight() {
-    console.log("remove");
-  }
-
   const [planeModel, setPlaneModel] = useState("");
 
   const fetchPlaneFromId = async () => {
@@ -79,14 +75,14 @@ function FlightCard(props: FlightDetails) {
   const arrivalCity = findCityNameFromIataCode(props.arrivalAirport);
 
   return (
-    <div className="border rounded-lg border-gray-400 flex-row pl-5 mb-5">
-      <p className="flight-time">
+    <div className="border rounded-lg border-gray-400 flex-row pl-5 mb-5 pt-2">
+      <p className="flight-time mb-3 font-semibold">
         Flight Time &#183; {formatFlightDuration(props)}
       </p>
       <div className="flight-info grid grid-cols-[3fr_1fr_1fr]">
         <div className="airports-info grid grid-cols-[2fr_1fr_2fr]">
           <div className="departure-info">
-            <p className="departure-time">
+            <p className="departure-time text-2xl font-bold">
               {props.departureAirport}{" "}
               {formatTime(props.departureTime, "HH:mm")}
             </p>
@@ -106,7 +102,7 @@ function FlightCard(props: FlightDetails) {
           </div>
 
           <div className="arrival-info">
-            <p className="arrival-time">
+            <p className="arrival-time text-2xl font-bold">
               {props.arrivalAirport} {formatTime(props.arrivalTime, "HH:mm")}
             </p>
             <p className="city">{arrivalCity}</p>
@@ -117,7 +113,7 @@ function FlightCard(props: FlightDetails) {
         </div>
 
         <div className="other-info">
-          <p className="brand-name">QAirline</p>
+          <p className="brand-name text-xl font-semibold">QAirline</p>
           <p className="flight-number">{props.flightNumber}</p>
           <p className="aircraft-name">{planeModel}</p>
         </div>
@@ -125,17 +121,29 @@ function FlightCard(props: FlightDetails) {
         <div className="flight-actions">
           <div className="flex flex-col gap-4">
             <button
-              className="w-3/4 text-white bg-red-600 hover:bg-red-700 active:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
-              onClick={handleRemoveFlight}
+              className="w-3/4 text-white bg-red-600 hover:bg-red-700 active:bg-red-800 font-medium rounded-lg text-sm px-1 py-2.5 me-2 mb-2"
+              onClick={() => props.handleRemoveFlight(props.flight_id)}
             >
-              Remove Flight
+              Remove
             </button>
             <button
-              className="w-3/4 text-white bg-yellow-400 hover:bg-yellow-500 active:bg-yellow-600 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
-              onClick={handleDelayFlight}
+              className="w-3/4 text-white bg-yellow-400 hover:bg-yellow-500 active:bg-yellow-600 font-medium rounded-lg text-sm px-1 py-2.5 me-2 mb-2"
+              data-bs-toggle="modal"
+              data-bs-target="#staticBackdrop"
             >
-              Delay Flight
+              Edit
             </button>
+            <EditFlight
+              flightId={props.flight_id}
+              boardTime={props.boardTime}
+              departureTime={props.departureTime}
+              arrivalTime={props.arrivalTime}
+              aircraftId={props.aircraftId}
+              departureAirport={props.departureAirport}
+              arrivalAirport={props.arrivalAirport}
+              price={props.price}
+              flightNumber={props.flightNumber}
+            />
           </div>
         </div>
       </div>
