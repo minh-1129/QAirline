@@ -26,7 +26,7 @@ function LogInForm() {
           Authorization: `Basic ${credentials}`,
           "Content-Type": "application/json",
         },
-        credentials: "include",
+        //credentials: "include",
       }).then((response) => {
         if (response.status === 200) {
           window.location.href = "../plane";

@@ -24,16 +24,6 @@ export default function Header() {
       {/* Navigation Buttons */}
       <div style={styles.navLinks}>
         <Link
-          href="/"
-          style={
-            pathname === "/"
-              ? { ...styles.link, ...styles.activeLink }
-              : styles.link
-          }
-        >
-          Stats
-        </Link>
-        <Link
           href="/plane"
           style={
             pathname === "/plane"
@@ -65,6 +55,15 @@ export default function Header() {
           Post
         </Link>
       </div>
+      <button
+        style={styles.logOutButton}
+        className=" text-white bg-red-600 hover:bg-red-700 active:bg-red-800 font-medium rounded-lg text-sm px-3 py-2.5 me-2 mb-2"
+        onClick={() => {
+          window.location.href = "../";
+        }}
+      >
+        Log out
+      </button>
     </nav>
   );
 }
@@ -72,6 +71,7 @@ export default function Header() {
 const styles = {
   navbar: {
     display: "flex",
+    justifyContent: "space-between",
     columnGap: "50px",
     alignItems: "center",
     padding: "10px 20px",
@@ -101,6 +101,11 @@ const styles = {
   activeLink: {
     color: "#fff",
     backgroundColor: "#007bff", // Highlight color
+    fontWeight: "bold",
+  },
+  logOutButton: {
+    display: "inline",
+    float: "right",
     fontWeight: "bold",
   },
 };

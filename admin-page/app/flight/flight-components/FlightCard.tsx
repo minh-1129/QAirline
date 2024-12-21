@@ -76,13 +76,13 @@ function FlightCard(props: FlightDetails) {
 
   return (
     <div className="border rounded-lg border-gray-400 flex-row pl-5 mb-5">
-      <p className="flight-time mb-3">
+      <p className="flight-time mb-3 font-semibold">
         Flight Time &#183; {formatFlightDuration(props)}
       </p>
       <div className="flight-info grid grid-cols-[3fr_1fr_1fr]">
         <div className="airports-info grid grid-cols-[2fr_1fr_2fr]">
           <div className="departure-info">
-            <p className="departure-time">
+            <p className="departure-time text-2xl font-bold">
               {props.departureAirport}{" "}
               {formatTime(props.departureTime, "HH:mm")}
             </p>
@@ -102,7 +102,7 @@ function FlightCard(props: FlightDetails) {
           </div>
 
           <div className="arrival-info">
-            <p className="arrival-time">
+            <p className="arrival-time text-2xl font-bold">
               {props.arrivalAirport} {formatTime(props.arrivalTime, "HH:mm")}
             </p>
             <p className="city">{arrivalCity}</p>
@@ -113,7 +113,7 @@ function FlightCard(props: FlightDetails) {
         </div>
 
         <div className="other-info">
-          <p className="brand-name">QAirline</p>
+          <p className="brand-name text-xl font-semibold">QAirline</p>
           <p className="flight-number">{props.flightNumber}</p>
           <p className="aircraft-name">{planeModel}</p>
         </div>

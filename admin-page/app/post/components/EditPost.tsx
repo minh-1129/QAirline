@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 interface PostDetails {
   postId: number;

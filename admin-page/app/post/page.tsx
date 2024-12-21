@@ -7,7 +7,7 @@ function PostPage() {
     <>
       <Header />
       <div>
-        <h1 className="page-title">Post Management</h1>
+        <h1 className="page-title text-center mb-5">Post Management</h1>
         <div className="grid grid-cols-[1fr_2fr]">
           <div className="left-side">
             <NewPostInputForm />
