@@ -1,0 +1,1 @@
+export type SortOption = 'TRAVEL_DURATION' | 'PRICE' | 'ARRIVAL_TIME' | 'DEPARTURE_TIME'
