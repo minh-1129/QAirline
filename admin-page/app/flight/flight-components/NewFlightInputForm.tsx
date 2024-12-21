@@ -96,7 +96,7 @@ function NewFlightInputForm() {
         status: "On time",
       };
 
-      fetch("http://112.137.129.161:1803/api/v1/flights", {
+      fetch("http://112.137.129.161:1803/api/v1/flights/withseats", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(flight),
