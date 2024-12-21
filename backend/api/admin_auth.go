@@ -86,7 +86,6 @@ func HandleAdminAuth(next http.HandlerFunc) http.HandlerFunc {
         hashedRemoteAddr := HashString(r.RemoteAddr)
         sessionCookie, err := r.Cookie("session_id")
         if err != nil || sessionStore[hashedRemoteAddr] != sessionCookie.Value {
-            // w.Header().Set("WWW-Authenticate", `Basic realm="Restricted Area"`)
             respondWithJSON(r, w, http.StatusUnauthorized, map[string]string{"message": "Unauthorized"})
             return
         }

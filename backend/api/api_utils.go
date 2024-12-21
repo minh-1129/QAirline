@@ -78,9 +78,10 @@ func ApplyCSP(next http.Handler) http.HandlerFunc {
         // w.Header().Set("Access-Control-Allow-Credentials", "true")
         w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
         w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, Content-Length, Accept-Encoding, X-CSRF-Token, X-Api-Key")
-        // w.Header().Set("Content-Security-Policy", "default-src *; connect-src *; style-src *;")
-        w.Header().Set("Content-Security-Policy", "default-src 'none'; connect-src *; script-src '*' 'unsafe-inline'; style-src '*' 'unsafe-inline';")
         // w.Header().Set("Content-Security-Policy", "default-src *;")
+        // w.Header().Set("Content-Security-Policy", "default-src *; connect-src *; style-src *;")
+        // w.Header().Set("Content-Security-Policy", "default-src 'none'; connect-src *; script-src '*' 'unsafe-inline'; style-src '*' 'unsafe-inline';")
+        w.Header().Set("Content-Security-Policy", "default-src *; connect-src *; script-src '*' 'unsafe-inline'; style-src '*' 'unsafe-inline';")
 
         if r.Method == http.MethodOptions {
             w.WriteHeader(http.StatusNoContent)
