@@ -1,0 +1,2 @@
+2024/12/21 23:14:26 could not remove flight: pq: null value in column "flight_id" of relation "bookings" violates not-null constraint
+2024/12/21 23:14:26 Failed to remove flight: pq: null value in column "flight_id" of relation "bookings" violates not-null constraint

@@ -1,0 +1,94 @@
+<html>
+    <head>
+        <title>Logs and Errors</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                background-color: #f4f4f4;
+                width: 100%;
+            }
+            .container {
+                display: flex;
+                width: 100%;
+                height: 90vh;  /* Constrain the height of the container */
+                overflow: hidden;  /* Prevent overflow from affecting the background */
+            }
+            .column {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                background-color: #fff;
+                height: 90%;  /* Ensure the column does not exceed its container */
+                display: flex; flex-direction: column;
+            }
+            pre {
+                /* white-space: pre-wrap; */ /* Allow text to wrap */
+                /* word-wrap: break-word; */ /* Allow long lines to break and scroll horizontally */
+                margin: 10px;
+                overflow: auto;
+                padding: 5px;
+                font-size: 14px;
+                background-color: #f7f7f7;
+                border: 1px solid #ddd;
+                max-height: 100%;
+                /* flex: 1; */  /* Allow the pre element to grow */
+            }
+        </style>
+        <script>
+            // Function to fetch and update Logs content
+            function refreshLogs() {
+                fetch('/api/v1/logs/logs', {
+                    method: 'GET',
+                })
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('logsContent').innerText = data;
+                })
+                .catch(err => console.error('Error fetching logs:', err));
+            }
+
+            // Function to fetch and update Errors content
+            function refreshErrors() {
+                fetch('/api/v1/logs/errors', {
+                    method: 'GET',
+                })
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('errorsContent').innerText = data;
+                })
+                .catch(err => console.error('Error fetching errors:', err));
+            }
+
+            // Refresh both Logs and Errors periodically
+            function startAutoRefresh() {
+                refreshLogs();
+                refreshErrors();
+                setInterval(() => {
+                    refreshLogs();
+                    refreshErrors();
+                }, 5000); // Refresh every 5 seconds
+            }
+
+            // Start refreshing content on page load
+            window.onload = startAutoRefresh;
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="column">
+                <h1>Logs</h1>
+                <pre id="logsContent">Loading logs...</pre>
+            </div>
+            <div class="column">
+                <h1>Errors</h1>
+                <pre id="errorsContent">Loading errors...</pre>
+            </div>
+        </div>
+    </body>
+</html>
