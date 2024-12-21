@@ -22,13 +22,17 @@ func resetDatabase(db *sql.DB) error {
     database.ForceDropTable(db, "bookings")
     database.ForceDropTable(db, "passengers")
     database.ForceDropTable(db, "users")
+    database.ForceDropTable(db, "seats")
+    database.ForceDropTable(db, "news")
 
     // Create all tables
     database.CreateAircraftsTable(db)
+    database.CreateSeatsTable(db)
     database.CreateFlightsTable(db)
     database.CreateBookingsTable(db)
     database.CreatePassengersTable(db)
     database.CreateUsersTable(db)
+    database.CreateNewsTable(db)
 
     // // Create airports table
     database.ForceDropTable(db, "airports")
@@ -36,6 +40,7 @@ func resetDatabase(db *sql.DB) error {
     database.BulkInsertAirports(db, "database/data/airports.csv")
 
     // Set up foreign key constraints
+    database.SetSeatsForeignKeys(db)
     database.SetFlightsForeignKeys(db)
     database.SetBookingsForeignKeys(db)
     database.SetPassengersForeignKeys(db)
@@ -72,19 +77,19 @@ func startServer(runDetached bool, useLocal bool, resetDB bool) (*sql.DB, error)
     }
     fmt.Println("Database initialized successfully")
 
-    api.RegisterRoutes(db)
+    handler := api.RegisterRoutes(db)
 
     // Run the server
     if runDetached {
         go func() {
-            err := http.ListenAndServe(fmt.Sprintf("0.0.0.0:%d", api.API_PORT), nil)
+            err := http.ListenAndServe(fmt.Sprintf("0.0.0.0:%d", api.API_PORT), handler)
             if err != nil {
                 log.Printf("Error starting the server: %v\n", err)
                 return
             }
         }()
     } else {
-        err := http.ListenAndServe(fmt.Sprintf("0.0.0.0:%d", api.API_PORT), nil)
+        err := http.ListenAndServe(fmt.Sprintf("0.0.0.0:%d", api.API_PORT), handler)
         if err != nil {
             log.Printf("Error starting the server: %v\n", err)
             return nil, err
@@ -95,7 +100,11 @@ func startServer(runDetached bool, useLocal bool, resetDB bool) (*sql.DB, error)
 }
 
 func main() {
-    db, err := startServer(false, true, false)
+    runDetached := false
+    useLocal := true
+    resetDB := false
+
+    db, err := startServer(runDetached, useLocal, resetDB)
     if err != nil {
         log.Printf("Error starting the server: %v\n", err)
         return

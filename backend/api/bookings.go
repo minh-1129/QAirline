@@ -231,33 +231,33 @@ func GetAllBookings(db *sql.DB) http.HandlerFunc {
 }
 
 // RegisterBookingsRoutes initializes all booking routes
-func RegisterBookingsRoutes(db *sql.DB) {
+func RegisterBookingsRoutes(db *sql.DB, mux *http.ServeMux) {
     // Register the API routes
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, BookingRoute)),
         GetAllBookings(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("POST /%s", GetJoinedPath(API_BASE_URL, BookingRoute)),
         CreateBooking(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("PUT /%s", GetJoinedPath(API_BASE_URL, BookingRoute, "{booking_id}")),
         UpdateBooking(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("DELETE /%s", GetJoinedPath(API_BASE_URL, BookingRoute, "{booking_id}")),
         DeleteBooking(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, BookingRoute, "search/booking", "{booking_id}")),
         GetBookingByID(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, BookingRoute, "search/flight/flight_id", "{flight_id}")),
         GetBookingByFlightID(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, BookingRoute, "search/citizen", "{citizen_id}")),
         GetBookingByCitizenID(db),
     )

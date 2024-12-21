@@ -3,7 +3,6 @@ fetch('http://112.137.129.161:1803/api/v1/aircrafts/1', {
     headers: {
       'accept': 'application/json'
     },
-    mode: 'cors',
   })
     .then(response => {
       if (!response.ok) {

@@ -192,29 +192,29 @@ func GetAllUsers(db *sql.DB) http.HandlerFunc {
 }
 
 // RegisterUsersRoutes initializes all user routes
-func RegisterUsersRoutes(db *sql.DB) {
+func RegisterUsersRoutes(db *sql.DB, mux *http.ServeMux) {
     // Register the API routes
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, UserRoute)),
         GetAllUsers(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("POST /%s", GetJoinedPath(API_BASE_URL, UserRoute)),
         CreateUser(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("PUT /%s", GetJoinedPath(API_BASE_URL, UserRoute, "user", "{user_id}")),
         UpdateUserByID(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("DELETE /%s", GetJoinedPath(API_BASE_URL, UserRoute, "user", "{user_id}")),
         RemoveUserByID(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, UserRoute, "user", "{user_id}")),
         GetUserByID(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, UserRoute, "search", "citizen_id", "{citizen_id}")),
         GetUserByCitizenID(db),
     )

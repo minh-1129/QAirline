@@ -96,17 +96,17 @@ func GetLogsAndErrors(w http.ResponseWriter, r *http.Request) {
 }
 
 // RegisterLogsRoutes initializes all routes for logs
-func RegisterLogsRoutes(handleAuth func(http.HandlerFunc) http.HandlerFunc) {
+func RegisterLogsRoutes(handleAuth func(http.HandlerFunc) http.HandlerFunc, mux *http.ServeMux) {
     // Register the logs routes
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("/%s", GetJoinedPath(API_BASE_URL, LogsRoute)),
         handleAuth(GetLogsAndErrors),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("/%s", GetJoinedPath(API_BASE_URL, LogsRoute, "errors")),
         handleAuth(GetErrors),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("/%s", GetJoinedPath(API_BASE_URL, LogsRoute, "logs")),
         handleAuth(GetLogs),
     )

@@ -285,41 +285,41 @@ func GetAircraftsByAircraftName(db *sql.DB) http.HandlerFunc {
 }
 
 // RegisterAircraftsRoutes registers all routes related to aircrafts
-func RegisterAircraftsRoutes(db *sql.DB) {
+func RegisterAircraftsRoutes(db *sql.DB, mux *http.ServeMux) {
     //Register the API routes
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("POST /%s", GetJoinedPath(API_BASE_URL, AircraftRoute)),
         CreateAircraft(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, AircraftRoute)),
         GetAllAircrafts(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, AircraftRoute, "{aircraft_id}")),
         GetAircraftByID(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("PUT /%s", GetJoinedPath(API_BASE_URL, AircraftRoute, "{aircraft_id}")),
         UpdateAircraft(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("DELETE /%s", GetJoinedPath(API_BASE_URL, AircraftRoute, "{aircraft_id}")),
         RemoveAircraft(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, AircraftRoute, "search/aircraft", "{aircraft_type}")),
         GetAircraftsByAircraftType(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, AircraftRoute, "search/manufacturer", "{aircraft_manufacturer}")),
         GetAircraftsByAircraftManufacturer(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, AircraftRoute, "search/capacity", "{capacity}")),
         GetAircraftsByCapacity(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, AircraftRoute, "search/name", "{aircraft_name}")),
         GetAircraftsByAircraftName(db),
     )

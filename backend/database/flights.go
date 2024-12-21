@@ -20,11 +20,7 @@ type Flight struct {
     Status           string    `json:"status"`
     Gate             string    `json:"gate"`
     BoardTime        time.Time `json:"board_time"`
-}
-
-type FlightsResponse struct {
-    DepartingFlights []Flight `json:"departing_flights"`
-    ReturnFlights    []Flight `json:"return_flights"`
+    Price            float64   `json:"price"`
 }
 
 // CreateFlightsTable creates the 'flights' table
@@ -39,8 +35,9 @@ func CreateFlightsTable(db *sql.DB) error {
         departure_time TIMESTAMPTZ NOT NULL,
         arrival_time TIMESTAMPTZ NOT NULL,
         status VARCHAR(100) NOT NULL,
-        gate VARCHAR(10),
-        board_time TIMESTAMPTZ
+        gate VARCHAR(255),
+        board_time TIMESTAMPTZ,
+        price DECIMAL(20, 2) NOT NULL DEFAULT 0.00
     )
     `
     _, err := db.Exec(createTableQuery)
@@ -82,7 +79,8 @@ func GetFlightByID(db *sql.DB, flightID int) (*Flight, error) {
         arrival_time,
         status,
         gate,
-        board_time
+        board_time,
+        price
     FROM flights WHERE flight_id = $1
     `
 
@@ -100,6 +98,7 @@ func GetFlightByID(db *sql.DB, flightID int) (*Flight, error) {
         &flight.Status,
         &flight.Gate,
         &flight.BoardTime,
+        &flight.Price,
     )
     if err != nil {
         log.Printf("could not scan flight: %v\n", err)
@@ -122,7 +121,8 @@ func GetFlightByFlightNumber(db *sql.DB, flightNumber string) ([]Flight, error) 
         arrival_time,
         status,
         gate,
-        board_time
+        board_time,
+        price
     FROM flights WHERE flight_number = $1
     `
 
@@ -147,6 +147,7 @@ func GetFlightByFlightNumber(db *sql.DB, flightNumber string) ([]Flight, error) 
             &flight.Status,
             &flight.Gate,
             &flight.BoardTime,
+            &flight.Price,
         )
         if err != nil {
             log.Printf("could not scan flight: %v\n", err)
@@ -160,7 +161,7 @@ func GetFlightByFlightNumber(db *sql.DB, flightNumber string) ([]Flight, error) 
 }
 
 // InsertFlight inserts a new flight into the flights table
-func InsertFlight(db *sql.DB, flight *Flight) (int, error) {
+func InsertFlight(db *sql.DB, flight Flight) (int, error) {
     query := `
     INSERT INTO flights (
         flight_number,
@@ -171,8 +172,9 @@ func InsertFlight(db *sql.DB, flight *Flight) (int, error) {
         arrival_time,
         status,
         gate,
-        board_time
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING flight_id
+        board_time,
+        price
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING flight_id
     `
 
     var flightID int
@@ -187,6 +189,7 @@ func InsertFlight(db *sql.DB, flight *Flight) (int, error) {
         flight.Status,
         flight.Gate,
         flight.BoardTime,
+        flight.Price,
     ).Scan(&flightID)
     if err != nil {
         log.Printf("could not insert flight: %v\n", err)
@@ -196,8 +199,31 @@ func InsertFlight(db *sql.DB, flight *Flight) (int, error) {
     return flightID, nil
 }
 
+// InsertFlightWithSeats inserts a new flight and its seats into the flights and seats tables
+func InsertFlightWithSeats(db *sql.DB, flight Flight) (int, []Seat, error) {
+    flightID, err := InsertFlight(db, flight)
+    if err != nil {
+        log.Printf("could not insert flight: %v\n", err)
+        return 0, nil, err
+    }
+
+    aircraft, err := GetAircraftByID(db, flight.AircraftID)
+    if err != nil {
+        log.Printf("could not get aircraft: %v\n", err)
+        return 0, nil, err
+    }
+
+    seats, err := BulkInsertSeatsFromCapacity(db, flightID, flight.AircraftID, aircraft.Capacity)
+    if err != nil {
+        log.Printf("could not insert seats: %v\n", err)
+        return 0, nil, err
+    }
+
+    return flightID, seats, nil
+}
+
 // UpdateFlight updates an existing flight's details
-func UpdateFlight(db *sql.DB, flight *Flight) error {
+func UpdateFlight(db *sql.DB, flight Flight) error {
     query := `
     UPDATE flights SET
         flight_number = $1,
@@ -208,8 +234,9 @@ func UpdateFlight(db *sql.DB, flight *Flight) error {
         arrival_time = $6,
         status = $7,
         gate = $8,
-        board_time = $9
-    WHERE flight_id = $10
+        board_time = $9,
+        price = $10
+    WHERE flight_id = $11
     `
 
     _, err := db.Exec(
@@ -223,6 +250,7 @@ func UpdateFlight(db *sql.DB, flight *Flight) error {
         flight.Status,
         flight.Gate,
         flight.BoardTime,
+        flight.Price,
         flight.FlightID,
     )
     if err != nil {
@@ -259,7 +287,8 @@ func GetAllFlights(db *sql.DB) ([]Flight, error) {
         arrival_time,
         status,
         gate,
-        board_time
+        board_time,
+        price
     FROM flights
     `
 
@@ -284,6 +313,7 @@ func GetAllFlights(db *sql.DB) ([]Flight, error) {
             &flight.Status,
             &flight.Gate,
             &flight.BoardTime,
+            &flight.Price,
         )
         if err != nil {
             log.Printf("could not scan flight: %v\n", err)
@@ -309,7 +339,8 @@ func GetFlightsByDeAndArrAirport(db *sql.DB, departureAirport string, arrivalAir
         arrival_time,
         status,
         gate,
-        board_time
+        board_time,
+        price
     FROM flights WHERE departure_airport = $1 AND arrival_airport = $2
     `
 
@@ -334,6 +365,7 @@ func GetFlightsByDeAndArrAirport(db *sql.DB, departureAirport string, arrivalAir
             &flight.Status,
             &flight.Gate,
             &flight.BoardTime,
+            &flight.Price,
         )
         if err != nil {
             log.Printf("could not scan flight: %v\n", err)
@@ -359,7 +391,8 @@ func GetFlightsByDeAndArrAirportAndDepTime(db *sql.DB, departureAirport string, 
         arrival_time,
         status,
         gate,
-        board_time
+        board_time,
+        price
     FROM flights WHERE departure_airport = $1 AND arrival_airport = $2 AND DATE(departure_time) = DATE($3)
     `
 
@@ -384,6 +417,7 @@ func GetFlightsByDeAndArrAirportAndDepTime(db *sql.DB, departureAirport string, 
             &flight.Status,
             &flight.Gate,
             &flight.BoardTime,
+            &flight.Price,
         )
         if err != nil {
             log.Printf("could not scan flight: %v\n", err)
