@@ -27,15 +27,15 @@ export default function Header() {
           {/* Logo*/}
           <Link
             href="/"
-            className="absolute left-4 top-1/2 flex -translate-y-1/2 items-center"
+            className="absolute left-4  flex items-center"
             style={{ transform: "translateY(-50%)" }}
           >
             <Image
-              src=""
+              src="/logo.jpg"
               alt="QAirline"
               width={180}
               height={40}
-              className="h-16 w-auto"
+              className="h-12 w-auto"
             />
           </Link>
 

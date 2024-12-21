@@ -1,4 +1,3 @@
-import { ChevronDown } from 'lucide-react'
 
 interface PriceColumnProps {
   type: 'economy' | 'premiumEconomy'
@@ -7,11 +6,13 @@ interface PriceColumnProps {
     currency: string
     available: boolean
   }
+  onSelect: () => void
+  isSelected: boolean
 }
 
-export function PriceColumn({ type, price }: PriceColumnProps) {
-  const bgColor = type === 'economy' ? 'bg-[#006341]' : 'bg-[#4a4a4a]'
-  
+export function PriceColumn({ type, price, onSelect, isSelected }: PriceColumnProps) {
+  const bgColor = type === 'economy' ? 'bg-[#4a4a4a]' : 'bg-[#006341]'
+
   return (
     <div className="w-[200px]">
       <div className={`${bgColor} px-4 py-2 text-white`}>
@@ -22,13 +23,21 @@ export function PriceColumn({ type, price }: PriceColumnProps) {
       <div className="border-x border-b border-gray-200 px-4 py-3">
         {price.available ? (
           <>
-            <div className="text-sm text-gray-600">FROM {price.currency}</div>
+            <div className="text-sm text-gray-600">{price.currency}</div>
             <div className="mt-1 text-xl font-bold text-gray-900">
               {price.amount.toFixed(2)}
             </div>
-            <div className="text-sm text-gray-600">PER ADULT</div>
-            <button className="mt-2 flex w-full items-center justify-between rounded border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50">
-              Select
+            <div className="text-sm text-gray-600">PER PERSON</div>
+            <button 
+              onClick={onSelect}
+              className={`mt-2 flex w-full items-center justify-between rounded border px-3 py-1.5 text-sm font-medium transition-colors ${
+                isSelected 
+                  ? 'border-[#1b206e] bg-[#1b206e] text-white' 
+                  : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              {isSelected ? 'Selected' : 'Select'}
+              
             </button>
           </>
         ) : (

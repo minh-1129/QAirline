@@ -13,7 +13,7 @@ export default function SearchTabs() {
         onValueChange={setActiveTab}
         className="w-full"
       >
-        <TabsList className="grid w-full grid-cols-5 justify-center bg-[#0C5B6D] font-medium text-white">
+        <TabsList className="grid w-full grid-cols-3 justify-center bg-[#1B3168] font-medium text-white">
           <TabsTrigger
             value="book-trip"
             className={`${
@@ -34,16 +34,7 @@ export default function SearchTabs() {
           >
             MANAGE BOOKING
           </TabsTrigger>
-          <TabsTrigger
-            value="check-in"
-            className={`${
-              activeTab === "check-in"
-                ? ""
-                : ""
-            }`}
-          >
-            CHECK IN
-          </TabsTrigger>
+
           <TabsTrigger
             value="flight-status"
             className={`${
@@ -53,16 +44,6 @@ export default function SearchTabs() {
             }`}
           >
             FLIGHT STATUS
-          </TabsTrigger>
-          <TabsTrigger
-            value="flight-schedule"
-            className={`${
-              activeTab === "flight-schedule"
-                ? ""
-                : ""
-            }`}
-          >
-            FLIGHT SCHEDULE
           </TabsTrigger>
         </TabsList>
 

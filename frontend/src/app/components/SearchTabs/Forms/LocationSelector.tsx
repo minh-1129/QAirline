@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { LocationProps, RegionProps, locationToString } from "./types/location";
+import {
+  LocationProps,
+  RegionProps,
+  locationToString,
+} from "../../../../types/location";
 import locationsData from "@/data/locations.json";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -107,7 +111,7 @@ export default function LocationSelector({
         )}
       </div>
       {showDropdown && (
-        <div className="no-scrollbar absolute z-50 mt-1 max-h-80 w-full overflow-y-auto rounded-md border bg-white shadow-lg">
+        <div className="no-scrollbar absolute z-50 mt-1 max-h-80 w-full overflow-y-auto rounded-md border bg-white shadow-lg md:w-[180%]">
           {inputString === "" ? (
             <div className="flex">
               <RegionList

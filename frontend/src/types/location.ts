@@ -14,3 +14,4 @@ export type RegionProps = {
     name: string,
     destinations: LocationProps[],
 }
+

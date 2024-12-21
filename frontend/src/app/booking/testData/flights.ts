@@ -1,4 +1,4 @@
-import { Flight } from '../types/flight'
+import { Flight } from "../../../types/flight";
 
 export const flights: Flight[] = [
   {
@@ -12,7 +12,7 @@ export const flights: Flight[] = [
     flight_number: "SQ 305",
     gate: "A1",
     status: "On Time",
-    price: 914.72
+    price: 914.72,
   },
   {
     aircraft_id: 2,
@@ -25,7 +25,7 @@ export const flights: Flight[] = [
     flight_number: "SQ 317",
     gate: "B2",
     status: "On Time",
-    price: 1038.72
+    price: 1038.72,
   },
   {
     aircraft_id: 3,
@@ -38,7 +38,7 @@ export const flights: Flight[] = [
     flight_number: "SQ 319",
     gate: "C3",
     status: "On Time",
-    price: 914.72
+    price: 914.72,
   },
   {
     aircraft_id: 4,
@@ -51,7 +51,6 @@ export const flights: Flight[] = [
     flight_number: "SQ 321",
     gate: "D4",
     status: "On Time",
-    price: 914.72
-  }
-]
-
+    price: 914.72,
+  },
+];

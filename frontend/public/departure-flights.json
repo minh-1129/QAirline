@@ -1,0 +1,55 @@
+[
+    {
+      "aircraft_id": 1,
+      "arrival_airport": "SGN",
+      "arrival_time": "2024-01-10T05:00:00+07:00",
+      "board_time": "2024-01-09T15:40:00+07:00",
+      "departure_airport": "HAN",
+      "departure_time": "2024-01-09T16:10:00+07:00",
+      "flight_id": 305,
+      "flight_number": "VN 305",
+      "gate": "A1",
+      "status": "On Time",
+      "price": 914.72
+    },
+    {
+      "aircraft_id": 2,
+      "arrival_airport": "SGN",
+      "arrival_time": "2024-01-10T06:45:00+07:00",
+      "board_time": "2024-01-09T17:25:00+07:00",
+      "departure_airport": "HAN",
+      "departure_time": "2024-01-09T17:55:00+07:00",
+      "flight_id": 317,
+      "flight_number": "VN 317",
+      "gate": "B2",
+      "status": "On Time",
+      "price": 1038.72
+    },
+    {
+      "aircraft_id": 3,
+      "arrival_airport": "SGN",
+      "arrival_time": "2024-01-10T16:30:00+07:00",
+      "board_time": "2024-01-09T23:05:00+07:00",
+      "departure_airport": "HAN",
+      "departure_time": "2024-01-09T23:35:00+07:00",
+      "flight_id": 319,
+      "flight_number": "VN 319",
+      "gate": "C3",
+      "status": "On Time",
+      "price": 914.72
+    },
+    {
+      "aircraft_id": 4,
+      "arrival_airport": "SGN",
+      "arrival_time": "2024-01-10T18:00:00+07:00",
+      "board_time": "2024-01-10T00:35:00+07:00",
+      "departure_airport": "HAN",
+      "departure_time": "2024-01-10T01:05:00+07:00",
+      "flight_id": 321,
+      "flight_number": "VN 321",
+      "gate": "D4",
+      "status": "On Time",
+      "price": 914.72
+    }
+  ]
+  

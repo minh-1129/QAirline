@@ -1,4 +1,4 @@
-import { type SortOption } from '@/app/booking/types/SortOption'
+import { type SortOption } from '@/types/SortOption'
 
 interface SortBarProps {
   selected: SortOption
