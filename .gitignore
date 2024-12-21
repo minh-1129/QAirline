@@ -3,3 +3,4 @@
 **/.env
 **/.env.*
 **/logs/*
+**/node_modules/
