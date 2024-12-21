@@ -18,6 +18,9 @@ function EditFlight(props: FlightTimes) {
   const [newDepartureTime, setNewDepartureTime] = useState(props.departureTime);
   const [newArrivalTime, setNewArrivalTime] = useState(props.arrivalTime);
 
+  const now = new Date();
+  const formattedNow = now.toISOString().slice(0, 16);
+
   function handleNewBoardTime(e) {
     setNewBoardTime(e.target.value);
   }
@@ -94,6 +97,7 @@ function EditFlight(props: FlightTimes) {
                 required
                 value={newBoardTime}
                 onChange={handleNewBoardTime}
+                min={formattedNow}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               />
             </div>
@@ -112,6 +116,7 @@ function EditFlight(props: FlightTimes) {
                 required
                 value={newDepartureTime}
                 onChange={handleNewDepartureTime}
+                min={newBoardTime}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               />
             </div>
@@ -130,6 +135,7 @@ function EditFlight(props: FlightTimes) {
                 required
                 value={newArrivalTime}
                 onChange={handleNewArrivalTime}
+                min={newDepartureTime}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               />
             </div>

@@ -17,6 +17,9 @@ function NewFlightInputForm() {
   const [boardTime, setBoardTime] = useState("");
   const [price, setPrice] = useState();
 
+  const now = new Date();
+  const formattedNow = now.toISOString().slice(0, 16);
+
   useEffect(() => {
     const fetchAirports = async () => {
       try {
@@ -70,7 +73,7 @@ function NewFlightInputForm() {
     fetchPlanes();
   }, []);
 
-  function handleSubmitFlight (e) {
+  function handleSubmitFlight(e) {
     console.log(arrivalTime);
     if (
       flightNumber &&
@@ -82,7 +85,6 @@ function NewFlightInputForm() {
       boardTime &&
       price
     ) {
-      
       const flight = {
         aircraft_id: planeModel.value,
         arrival_airport: arrivalAirport.value,
@@ -206,6 +208,7 @@ function NewFlightInputForm() {
           required
           value={boardTime}
           onChange={handleBoardTime}
+          min={formattedNow}
           className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
         />
       </div>
@@ -224,6 +227,7 @@ function NewFlightInputForm() {
           required
           value={departureTime}
           onChange={handleDepartureTime}
+          min={boardTime}
           className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
         />
       </div>
@@ -242,6 +246,7 @@ function NewFlightInputForm() {
           required
           value={arrivalTime}
           onChange={handleArrivalTime}
+          min={departureTime}
           className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
         />
       </div>
