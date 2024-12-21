@@ -1,0 +1,1197 @@
+definitions:
+  database.Aircraft:
+    properties:
+      aircraft_id:
+        type: integer
+      aircraft_manufacturer:
+        type: string
+      aircraft_name:
+        type: string
+      aircraft_type:
+        type: string
+      capacity:
+        type: integer
+    type: object
+  database.Airport:
+    properties:
+      airport_id:
+        type: integer
+      city:
+        type: string
+      country:
+        type: string
+      iata:
+        type: string
+      icao:
+        type: string
+      name:
+        type: string
+      timezone:
+        description: |-
+          Latitude  string
+          Longitude string
+          Altitude  string
+        type: string
+    type: object
+  database.Booking:
+    properties:
+      booking_date:
+        type: string
+      booking_id:
+        type: integer
+      citizen_id:
+        type: string
+      class:
+        type: string
+      flight_id:
+        type: integer
+      price:
+        type: number
+      seat_number:
+        type: string
+      total_passengers:
+        type: integer
+    type: object
+  database.Flight:
+    properties:
+      aircraft_id:
+        type: integer
+      arrival_airport:
+        type: string
+      arrival_time:
+        type: string
+      board_time:
+        type: string
+      departure_airport:
+        type: string
+      departure_time:
+        type: string
+      flight_id:
+        type: integer
+      flight_number:
+        type: string
+      gate:
+        type: string
+      status:
+        type: string
+    type: object
+  database.Passenger:
+    properties:
+      booking_id:
+        type: integer
+      citizen_id:
+        $ref: '#/definitions/sql.NullString'
+      dob:
+        type: string
+      email:
+        $ref: '#/definitions/sql.NullString'
+      first_name:
+        type: string
+      gender:
+        type: string
+      last_name:
+        type: string
+      passenger_id:
+        type: integer
+      phone_number:
+        $ref: '#/definitions/sql.NullString'
+      seat_number:
+        type: string
+    type: object
+  database.User:
+    properties:
+      citizen_id:
+        type: string
+      dob:
+        type: string
+      email:
+        $ref: '#/definitions/sql.NullString'
+      first_name:
+        type: string
+      gender:
+        type: string
+      hashed_password:
+        type: string
+      last_name:
+        type: string
+      phone_number:
+        $ref: '#/definitions/sql.NullString'
+      user_id:
+        type: integer
+      username:
+        type: string
+    type: object
+  sql.NullString:
+    properties:
+      string:
+        type: string
+      valid:
+        description: Valid is true if String is not NULL
+        type: boolean
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/aircrafts:
+    get:
+      consumes:
+      - application/json
+      description: Get all aircrafts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Aircraft'
+            type: array
+      summary: Get all aircrafts
+      tags:
+      - aircrafts
+    post:
+      consumes:
+      - application/json
+      description: Create an aircraft
+      parameters:
+      - description: Aircraft object
+        in: body
+        name: aircraft
+        required: true
+        schema:
+          $ref: '#/definitions/database.Aircraft'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Aircraft'
+      summary: Create an aircraft
+      tags:
+      - aircrafts
+  /api/v1/aircrafts/{aircraft_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove aircraft by ID
+      parameters:
+      - description: Aircraft ID
+        in: path
+        name: aircraft_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Remove aircraft by ID
+      tags:
+      - aircrafts
+    get:
+      consumes:
+      - application/json
+      description: Get aircraft by ID
+      parameters:
+      - description: Aircraft ID
+        in: path
+        name: aircraft_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Aircraft'
+      summary: Get aircraft by ID
+      tags:
+      - aircrafts
+    put:
+      consumes:
+      - application/json
+      description: Update aircraft by ID
+      parameters:
+      - description: Aircraft ID
+        in: path
+        name: aircraft_id
+        required: true
+        type: integer
+      - description: Aircraft object
+        in: body
+        name: aircraft
+        required: true
+        schema:
+          $ref: '#/definitions/database.Aircraft'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Aircraft'
+      summary: Update aircraft by ID
+      tags:
+      - aircrafts
+  /api/v1/aircrafts/search/aircraft/{aircraft_type}:
+    get:
+      consumes:
+      - application/json
+      description: Get aircrafts by aircraft type
+      parameters:
+      - description: Aircraft Type
+        in: path
+        name: aircraft_type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Aircraft'
+            type: array
+      summary: Get aircrafts by aircraft type
+      tags:
+      - aircrafts
+  /api/v1/aircrafts/search/capacity/{capacity}:
+    get:
+      consumes:
+      - application/json
+      description: Get all aircrafts by capacity threshold (>= capacity)
+      parameters:
+      - description: Aircraft Capacity
+        in: path
+        name: capacity
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Aircraft'
+            type: array
+      summary: Get all aircrafts by capacity threshold (>= capacity)
+      tags:
+      - aircrafts
+  /api/v1/aircrafts/search/manufacturer/{aircraft_manufacturer}:
+    get:
+      consumes:
+      - application/json
+      description: Get all aircrafts by aircraft manufacturer
+      parameters:
+      - description: Aircraft Manufacturer
+        in: path
+        name: aircraft_manufacturer
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Aircraft'
+            type: array
+      summary: Get all aircrafts by aircraft manufacturer
+      tags:
+      - aircrafts
+  /api/v1/aircrafts/search/name/{aircraft_name}:
+    get:
+      consumes:
+      - application/json
+      description: Get all aircrafts by aircraft name
+      parameters:
+      - description: Aircraft Name
+        in: path
+        name: aircraft_name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Aircraft'
+            type: array
+      summary: Get all aircrafts by aircraft name
+      tags:
+      - aircrafts
+  /api/v1/airports:
+    get:
+      consumes:
+      - application/json
+      description: Get all airports
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Airport'
+            type: array
+      summary: Get all airports
+      tags:
+      - airports
+  /api/v1/airports/city/{city}:
+    get:
+      consumes:
+      - application/json
+      description: Get airport by city
+      parameters:
+      - description: City
+        in: path
+        name: city
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Airport'
+            type: array
+      summary: Get airport by city
+      tags:
+      - airports
+  /api/v1/airports/iata/{iata}:
+    get:
+      consumes:
+      - application/json
+      description: Get airport by IATA code
+      parameters:
+      - description: IATA code
+        in: path
+        name: iata
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Airport'
+      summary: Get airport by IATA code
+      tags:
+      - airports
+  /api/v1/airports/icao/{icao}:
+    get:
+      consumes:
+      - application/json
+      description: Get airport by ICAO code
+      parameters:
+      - description: ICAO code
+        in: path
+        name: icao
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Airport'
+      summary: Get airport by ICAO code
+      tags:
+      - airports
+  /api/v1/airports/id/{airport_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get airport by ID
+      parameters:
+      - description: Airport ID
+        in: path
+        name: airport_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Airport'
+      summary: Get airport by ID
+      tags:
+      - airports
+  /api/v1/bookings:
+    get:
+      consumes:
+      - application/json
+      description: Get all bookings
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Booking'
+            type: array
+      summary: Get all bookings
+      tags:
+      - bookings
+    post:
+      consumes:
+      - application/json
+      description: Create a booking
+      parameters:
+      - description: Booking object
+        in: body
+        name: booking
+        required: true
+        schema:
+          $ref: '#/definitions/database.Booking'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Booking'
+      summary: Create a booking
+      tags:
+      - bookings
+  /api/v1/bookings/{booking_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove a booking
+      parameters:
+      - description: Booking ID
+        in: path
+        name: booking_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Remove a booking
+      tags:
+      - bookings
+    put:
+      consumes:
+      - application/json
+      description: Update a booking
+      parameters:
+      - description: Booking ID
+        in: path
+        name: booking_id
+        required: true
+        type: string
+      - description: Booking object
+        in: body
+        name: booking
+        required: true
+        schema:
+          $ref: '#/definitions/database.Booking'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Booking'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a booking
+      tags:
+      - bookings
+  /api/v1/bookings/search/booking/{booking_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get booking by ID
+      parameters:
+      - description: Booking ID
+        in: path
+        name: booking_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Booking'
+      summary: Get booking by ID
+      tags:
+      - bookings
+  /api/v1/bookings/search/citizen/{citizen_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get booking by citizen ID
+      parameters:
+      - description: Citizen ID
+        in: path
+        name: citizen_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Booking'
+            type: array
+      summary: Get booking by citizen ID
+      tags:
+      - bookings
+  /api/v1/bookings/search/flight/{flight_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get booking by flight ID
+      parameters:
+      - description: Flight ID
+        in: path
+        name: flight_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Booking'
+            type: array
+      summary: Get booking by flight ID
+      tags:
+      - bookings
+  /api/v1/flights:
+    get:
+      consumes:
+      - application/json
+      description: Get all flights
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Flight'
+            type: array
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all flights
+      tags:
+      - flights
+    post:
+      consumes:
+      - application/json
+      description: Create a new flight
+      parameters:
+      - description: Flight object
+        in: body
+        name: flight
+        required: true
+        schema:
+          $ref: '#/definitions/database.Flight'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/database.Flight'
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new flight
+      tags:
+      - flights
+  /api/v1/flights/{flight_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove a flight
+      parameters:
+      - description: Flight ID
+        in: path
+        name: flight_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: message
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Remove a flight
+      tags:
+      - flights
+    get:
+      consumes:
+      - application/json
+      description: Get a flight by its ID
+      parameters:
+      - description: Flight ID
+        in: path
+        name: flight_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Flight'
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a flight by its ID
+      tags:
+      - flights
+    put:
+      consumes:
+      - application/json
+      description: Update a flight
+      parameters:
+      - description: Flight ID
+        in: path
+        name: flight_id
+        required: true
+        type: integer
+      - description: Flight object
+        in: body
+        name: flight
+        required: true
+        schema:
+          $ref: '#/definitions/database.Flight'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Flight'
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a flight
+      tags:
+      - flights
+  /api/v1/flights/roundtrip:
+    get:
+      description: Fetch round-trip flights based on departure and arrival airports
+        and times
+      parameters:
+      - description: Departure Airport
+        in: query
+        name: departure
+        required: true
+        type: string
+      - description: Arrival Airport
+        in: query
+        name: arrival
+        required: true
+        type: string
+      - description: Departure Time
+        format: date-time
+        in: query
+        name: departure_time
+        required: true
+        type: string
+      - description: Return Time
+        format: date-time
+        in: query
+        name: return_time
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: departing_flights and return_flights
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get round-trip flights
+      tags:
+      - flights
+  /api/v1/flights/search:
+    get:
+      consumes:
+      - application/json
+      description: Get flights by departure and arrival airports
+      parameters:
+      - description: Departure Airport
+        in: query
+        name: departure
+        required: true
+        type: string
+      - description: Arrival Airport
+        in: query
+        name: arrival
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Flight'
+            type: array
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get flights by departure and arrival airports
+      tags:
+      - flights
+  /api/v1/flights/search/flight_number/{flight_number}:
+    get:
+      consumes:
+      - application/json
+      description: Get a flight by its flight number
+      parameters:
+      - description: Flight Number
+        in: path
+        name: flight_number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Flight'
+            type: array
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a flight by its flight number
+      tags:
+      - flights
+  /api/v1/flights/search/oneway:
+    get:
+      consumes:
+      - application/json
+      description: Get flights by departure and arrival airports and departure time
+      parameters:
+      - description: Departure Airport
+        in: query
+        name: departure
+        required: true
+        type: string
+      - description: Arrival Airport
+        in: query
+        name: arrival
+        required: true
+        type: string
+      - description: Departure Time
+        format: date-time
+        in: query
+        name: departure_time
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Flight'
+            type: array
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get flights by departure and arrival airports and departure time
+      tags:
+      - flights
+  /api/v1/passengers:
+    get:
+      consumes:
+      - application/json
+      description: Get all passengers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Passenger'
+            type: array
+      summary: Get all passengers
+      tags:
+      - passengers
+    post:
+      consumes:
+      - application/json
+      description: Create a passenger
+      parameters:
+      - description: Passenger object
+        in: body
+        name: passenger
+        required: true
+        schema:
+          $ref: '#/definitions/database.Passenger'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Passenger'
+      summary: Create a passenger
+      tags:
+      - passengers
+  /api/v1/passengers/booking/{booking_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get all passengers by booking ID
+      parameters:
+      - description: Booking ID
+        in: path
+        name: booking_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Passenger'
+            type: array
+      summary: Get all passengers by booking ID
+      tags:
+      - passengers
+  /api/v1/passengers/passenger/{passenger_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove a passenger
+      parameters:
+      - description: Passenger ID
+        in: path
+        name: passenger_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Remove a passenger
+      tags:
+      - passengers
+    get:
+      consumes:
+      - application/json
+      description: Get passenger by ID
+      parameters:
+      - description: Passenger ID
+        in: path
+        name: passenger_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Passenger'
+      summary: Get passenger by ID
+      tags:
+      - passengers
+    put:
+      consumes:
+      - application/json
+      description: Update passenger by ID
+      parameters:
+      - description: Passenger ID
+        in: path
+        name: passenger_id
+        required: true
+        type: integer
+      - description: Passenger object
+        in: body
+        name: passenger
+        required: true
+        schema:
+          $ref: '#/definitions/database.Passenger'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Passenger'
+      summary: Update passenger by ID
+      tags:
+      - passengers
+  /api/v1/users:
+    get:
+      consumes:
+      - application/json
+      description: Get all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.User'
+            type: array
+      summary: Get all users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Create a user
+      parameters:
+      - description: User object
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/database.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.User'
+      summary: Create a user
+      tags:
+      - users
+  /api/v1/users/search/citizen_id/{citizen_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get user by citizen ID
+      parameters:
+      - description: Citizen ID
+        in: path
+        name: citizen_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.User'
+      summary: Get user by citizen ID
+      tags:
+      - users
+  /api/v1/users/user/{user_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.User'
+      summary: Remove user by ID
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Get user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.User'
+      summary: Get user by ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      - description: User object
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/database.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.User'
+      summary: Update user by ID
+      tags:
+      - users
+swagger: "2.0"
