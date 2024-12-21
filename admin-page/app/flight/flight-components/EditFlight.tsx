@@ -33,7 +33,7 @@ function EditFlight(props: FlightTimes) {
   function handleDelayFlight() {
     if (newArrivalTime && newBoardTime && newDepartureTime) {
       const flight = {
-        aircraft_id: props.flightId,
+        aircraft_id: props.aircraftId,
         arrival_airport: props.arrivalAirport,
         arrival_time: newArrivalTime + ":00+07:00",
         board_time: newBoardTime + ":00+07:00",

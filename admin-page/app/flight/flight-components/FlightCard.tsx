@@ -75,7 +75,7 @@ function FlightCard(props: FlightDetails) {
   const arrivalCity = findCityNameFromIataCode(props.arrivalAirport);
 
   return (
-    <div className="border rounded-lg border-gray-400 flex-row pl-5 mb-5">
+    <div className="border rounded-lg border-gray-400 flex-row pl-5 mb-5 pt-2">
       <p className="flight-time mb-3 font-semibold">
         Flight Time &#183; {formatFlightDuration(props)}
       </p>

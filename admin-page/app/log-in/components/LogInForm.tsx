@@ -30,6 +30,8 @@ function LogInForm() {
       }).then((response) => {
         if (response.status === 200) {
           window.location.href = "../plane";
+        } else {
+          window.alert('Incorrect credentials!');
         }
       });
     }
