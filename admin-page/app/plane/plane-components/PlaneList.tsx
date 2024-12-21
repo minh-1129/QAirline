@@ -25,6 +25,15 @@ function PlaneList() {
     fetchPlanes();
   }, []);
 
+  function handleDeletePlane(aircraftId) {
+    fetch(`http://112.137.129.161:1803/api/v1/aircrafts/${aircraftId}`, {
+      method: "DELETE"
+    }).then((response) => {
+      console.log(response);
+      fetchPlanes();
+    })
+  }
+
   return (
     <div className="plane-grid grid grid-cols-2 gap-4 mr-8">
       {planesList.map((plane) => (
@@ -32,6 +41,8 @@ function PlaneList() {
           manufacturer={plane.aircraft_manufacturer}
           name={plane.aircraft_name}
           capacity={plane.capacity}
+          aircraft_id={plane.aircraft_id}
+          handleDeletePlane={handleDeletePlane}
         />
       ))}
     </div>

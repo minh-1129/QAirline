@@ -1,68 +1,88 @@
-import React from 'react'
+"use client";
+import React, { useState } from "react";
 
 function PlaneInfoInputForm() {
+  const [planeManufacturer, setPlaneManufacturer] = useState("");
+  const [planeName, setPlaneName] = useState("");
+  const [capacity, setCapacity] = useState();
+
+  function handlePlaneManufacturer(e) {
+    setPlaneManufacturer(e.target.value);
+  }
+
+  function handlePlaneName(e) {
+    setPlaneName(e.target.value);
+  }
+
+  function handleCapacity(e) {
+    setCapacity(e.target.value);
+  }
+
+  function handleSubmitPlane(e) {
+    //e.preventDefault();
+    if (planeManufacturer && planeName && capacity) {
+      const plane = {
+        aircraft_manufacturer: planeManufacturer,
+        aircraft_name: planeName,
+        aircraft_type: "string",
+        capacity: Number(capacity),
+      };
+  
+      fetch("http://112.137.129.161:1803/api/v1/aircrafts", {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(plane),
+      }).then((response) => {
+        console.log("new plane added");
+        console.log(response);
+      });
+    }
+  }
+
   return (
     <form className="max-w-lg mx-auto bg-white shadow-lg rounded-lg p-6 space-y-6">
-      <div>
-        <label
-          htmlFor="plane-picture"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Plane Picture
-        </label>
-        <input
-          type="file"
-          id="plane-picture"
-          name="plane-picture"
-          className="mt-1 block w-full text-sm text-gray-500 border border-gray-300 rounded-lg p-2 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-        />
-      </div>
+      <h2 className="text-2xl font-semibold mb-6 text-gray-800">
+        New Flight Information
+      </h2>
 
-      <div>
+      <div className="mb-4">
         <label
-          htmlFor="plane-id"
+          htmlFor="flightNumber"
           className="block text-sm font-medium text-gray-700"
         >
-          Plane ID
-        </label>
-        <input
-          type="text"
-          id="plane-id"
-          name="plane-id"
-          className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-          placeholder="Enter Plane ID"
-        />
-      </div>
-
-      <div>
-        <label
-          htmlFor="manufacturer"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Manufacturer
+          Manufacturer:
         </label>
         <input
           type="text"
           id="manufacturer"
           name="manufacturer"
-          className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-          placeholder="Enter Manufacturer"
+          placeholder="Enter manufacturer"
+          value={planeManufacturer}
+          onChange={handlePlaneManufacturer}
+          required
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
         />
       </div>
 
-      <div>
+      <div className="mb-4">
         <label
           htmlFor="name"
           className="block text-sm font-medium text-gray-700"
         >
-          Plane Name
+          Plane Name:
         </label>
         <input
           type="text"
           id="name"
           name="name"
-          className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           placeholder="Enter Plane Name"
+          value={planeName}
+          required
+          onChange={handlePlaneName}
         />
       </div>
 
@@ -71,23 +91,27 @@ function PlaneInfoInputForm() {
           htmlFor="capacity"
           className="block text-sm font-medium text-gray-700"
         >
-          Capacity
+          Capacity:
         </label>
         <input
           type="number"
           id="capacity"
           name="capacity"
-          className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           placeholder="Enter Capacity"
+          required
+          value={capacity}
+          onChange={handleCapacity}
         />
       </div>
 
       <div className="text-right">
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="w-full text-white bg-blue-500 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 shadow-md focus:outline-none"
+          onClick={handleSubmitPlane}
         >
-          Submit
+          Submit Plane Information
         </button>
       </div>
     </form>
