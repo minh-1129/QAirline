@@ -197,29 +197,29 @@ func GetPassengersByBookingID(db *sql.DB) http.HandlerFunc {
 }
 
 // RegisterPassengerRoutes initializes all passenger routes
-func RegisterPassengerRoutes(db *sql.DB) {
+func RegisterPassengerRoutes(db *sql.DB, mux *http.ServeMux) {
     // Register the API routes
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("POST /%s", GetJoinedPath(API_BASE_URL, PassengerRoute)),
         CreatePassenger(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("PUT /%s", GetJoinedPath(API_BASE_URL, PassengerRoute, "passenger", "{passenger_id}")),
         UpdatePassenger(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("DELETE /%s", GetJoinedPath(API_BASE_URL, PassengerRoute, "passenger", "{passenger_id}")),
         RemovePassenger(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, PassengerRoute, "passenger", "{passenger_id}")),
         GetPassengerByID(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, PassengerRoute)),
         GetAllPassengers(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, PassengerRoute, "booking", "{booking_id}")),
         GetPassengersByBookingID(db),
     )

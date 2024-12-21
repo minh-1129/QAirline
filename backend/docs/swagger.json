@@ -800,77 +800,6 @@
                 }
             }
         },
-        "/api/v1/flights/roundtrip": {
-            "get": {
-                "description": "Fetch round-trip flights based on departure and arrival airports and times",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "flights"
-                ],
-                "summary": "Get round-trip flights",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Departure Airport",
-                        "name": "departure",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Arrival Airport",
-                        "name": "arrival",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "format": "date-time",
-                        "description": "Departure Time",
-                        "name": "departure_time",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "format": "date-time",
-                        "description": "Return Time",
-                        "name": "return_time",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "departing_flights and return_flights",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/flights/search": {
             "get": {
                 "description": "Get flights by departure and arrival airports",
@@ -1029,6 +958,130 @@
                             "items": {
                                 "$ref": "#/definitions/database.Flight"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/flights/search/roundtrip": {
+            "get": {
+                "description": "Fetch round-trip flights based on departure and arrival airports and times",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "flights"
+                ],
+                "summary": "Get round-trip flights",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Departure Airport",
+                        "name": "departure",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Arrival Airport",
+                        "name": "arrival",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Departure Time",
+                        "name": "departure_time",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Return Time",
+                        "name": "return_time",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "departing_flights and return_flights",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/flights/withseats": {
+            "post": {
+                "description": "Create a new flight and seats",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "flights"
+                ],
+                "summary": "Create a new flight and seats",
+                "parameters": [
+                    {
+                        "description": "Flight object",
+                        "name": "flight",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/database.Flight"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "flight and seats",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     },
                     "400": {
@@ -1215,6 +1268,159 @@
                                 "type": "string"
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/api/v1/news": {
+            "get": {
+                "description": "Get all news articles",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "news"
+                ],
+                "summary": "Get all news",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.News"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new news article",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "news"
+                ],
+                "summary": "Create news",
+                "parameters": [
+                    {
+                        "description": "News object",
+                        "name": "news",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/database.News"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/database.News"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/news/{news_id}": {
+            "get": {
+                "description": "Get a news article by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "news"
+                ],
+                "summary": "Get news by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "News ID",
+                        "name": "news_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/database.News"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a news article",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "news"
+                ],
+                "summary": "Update news",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "News ID",
+                        "name": "news_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "News object",
+                        "name": "news",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/database.News"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a news article",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "news"
+                ],
+                "summary": "Delete news",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "News ID",
+                        "name": "news_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     }
                 }
             }
@@ -1411,6 +1617,387 @@
                             "additionalProperties": {
                                 "type": "string"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/seats": {
+            "get": {
+                "description": "Get all seats",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "seats"
+                ],
+                "summary": "Get all seats",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.Seat"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/seats/flight_id/{flight_id}/aircraft_id/{aircraft_id}": {
+            "get": {
+                "description": "Get all seats by flight and aircraft ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "seats"
+                ],
+                "summary": "Get all seats by flight and aircraft ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Flight ID",
+                        "name": "flight_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Aircraft ID",
+                        "name": "aircraft_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.Seat"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create seats by flight and aircraft ID  from an array",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "seats"
+                ],
+                "summary": "Create seats by flight and aircraft ID from an array",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Flight ID",
+                        "name": "flight_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Aircraft ID",
+                        "name": "aircraft_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.Seat"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Remove all seats by flight and aircraft ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "seats"
+                ],
+                "summary": "Remove all seats by flight and aircraft ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Flight ID",
+                        "name": "flight_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Aircraft ID",
+                        "name": "aircraft_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/seats/flight_id/{flight_id}/aircraft_id/{aircraft_id}/available": {
+            "get": {
+                "description": "Get available seats by flight and aircraft ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "seats"
+                ],
+                "summary": "Get available seats by flight and aircraft ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Flight ID",
+                        "name": "flight_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Aircraft ID",
+                        "name": "aircraft_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.Seat"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/seats/flight_id/{flight_id}/aircraft_id/{aircraft_id}/capacity/{capacity}": {
+            "post": {
+                "description": "Create seats by flight and aircraft ID from capacity",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "seats"
+                ],
+                "summary": "Create seats by flight and aircraft ID from capacity",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Flight ID",
+                        "name": "flight_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Aircraft ID",
+                        "name": "aircraft_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Capacity",
+                        "name": "capacity",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.Seat"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/seats/flight_id/{flight_id}/aircraft_id/{aircraft_id}/seat_number/{seat_number}": {
+            "get": {
+                "description": "Get seat by number with flight and aircraft ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "seats"
+                ],
+                "summary": "Get seat by number with flight and aircraft ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Flight ID",
+                        "name": "flight_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Aircraft ID",
+                        "name": "aircraft_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Seat Number",
+                        "name": "seat_number",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/database.Seat"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/seats/seat_id/{seat_id}": {
+            "get": {
+                "description": "Get seat by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "seats"
+                ],
+                "summary": "Get seat by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Seat ID",
+                        "name": "seat_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/database.Seat"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update seat by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "seats"
+                ],
+                "summary": "Update seat by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Seat ID",
+                        "name": "seat_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Seat Status",
+                        "name": "status",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Remove seat by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "seats"
+                ],
+                "summary": "Remove seat by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Seat ID",
+                        "name": "seat_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 }
@@ -1668,20 +2255,29 @@
                 "citizen_id": {
                     "type": "string"
                 },
-                "class": {
+                "dob": {
+                    "type": "string"
+                },
+                "email": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "first_name": {
                     "type": "string"
                 },
                 "flight_id": {
                     "type": "integer"
                 },
-                "price": {
-                    "type": "number"
-                },
-                "seat_number": {
+                "last_name": {
                     "type": "string"
+                },
+                "phone_number": {
+                    "$ref": "#/definitions/sql.NullString"
                 },
                 "total_passengers": {
                     "type": "integer"
+                },
+                "total_price": {
+                    "type": "number"
                 }
             }
         },
@@ -1715,7 +2311,27 @@
                 "gate": {
                     "type": "string"
                 },
+                "price": {
+                    "type": "number"
+                },
                 "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "database.News": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "news_id": {
+                    "type": "integer"
+                },
+                "title": {
                     "type": "string"
                 }
             }
@@ -1750,7 +2366,33 @@
                 "phone_number": {
                     "$ref": "#/definitions/sql.NullString"
                 },
+                "seat_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "database.Seat": {
+            "type": "object",
+            "properties": {
+                "aircraft_id": {
+                    "type": "integer"
+                },
+                "flight_id": {
+                    "type": "integer"
+                },
+                "seat_id": {
+                    "type": "integer"
+                },
                 "seat_number": {
+                    "type": "string"
+                },
+                "seat_price": {
+                    "type": "number"
+                },
+                "seat_status": {
+                    "type": "string"
+                },
+                "seat_type": {
                     "type": "string"
                 }
             }

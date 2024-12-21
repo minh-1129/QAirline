@@ -135,25 +135,25 @@ func getAirportByID(db *sql.DB) http.HandlerFunc {
 }
 
 // RegisterAirportsRoutes initializes all airports routes
-func RegisterAirportsRoutes(db *sql.DB) {
+func RegisterAirportsRoutes(db *sql.DB, mux *http.ServeMux) {
     // Register the API routes
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, AirportRoute)),
         getAllAirports(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, AirportRoute, "iata", "{iata}")),
         getAirportByIATA(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, AirportRoute, "id", "{airport_id}")),
         getAirportByID(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, AirportRoute, "icao", "{icao}")),
         getAirportByICAO(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, AirportRoute, "city", "{city}")),
         getAirportByCity(db),
     )

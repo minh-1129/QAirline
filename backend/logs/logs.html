@@ -43,22 +43,26 @@
         <script>
             // Function to fetch and update Logs content
             function refreshLogs() {
-                fetch('/api/v1/logs/logs')
-                    .then(response => response.text())
-                    .then(data => {
-                        document.getElementById('logsContent').innerText = data;
-                    })
-                    .catch(err => console.error('Error fetching logs:', err));
+                fetch('/api/v1/logs/logs', {
+                    method: 'GET',
+                })
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('logsContent').innerText = data;
+                })
+                .catch(err => console.error('Error fetching logs:', err));
             }
 
             // Function to fetch and update Errors content
             function refreshErrors() {
-                fetch('/api/v1/logs/errors')
-                    .then(response => response.text())
-                    .then(data => {
-                        document.getElementById('errorsContent').innerText = data;
-                    })
-                    .catch(err => console.error('Error fetching errors:', err));
+                fetch('/api/v1/logs/errors', {
+                    method: 'GET',
+                })
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('errorsContent').innerText = data;
+                })
+                .catch(err => console.error('Error fetching errors:', err));
             }
 
             // Refresh both Logs and Errors periodically

@@ -1,11 +1,2 @@
-2024/12/12 14:10:35 Failed to create passenger: parsing time "string" as "2006-01-02T15:04:05Z07:00": cannot parse "string" as "2006"
-2024/12/12 14:10:44 Failed to create passenger: parsing time "string" as "2006-01-02T15:04:05Z07:00": cannot parse "string" as "2006"
-2024/12/12 14:10:44 Failed to create passenger: parsing time "string" as "2006-01-02T15:04:05Z07:00": cannot parse "string" as "2006"
-2024/12/12 14:10:44 Failed to create passenger: parsing time "string" as "2006-01-02T15:04:05Z07:00": cannot parse "string" as "2006"
-2024/12/12 14:10:44 Failed to create passenger: parsing time "string" as "2006-01-02T15:04:05Z07:00": cannot parse "string" as "2006"
-2024/12/12 14:11:43 Failed to create passenger: parsing time "string" as "2006-01-02T15:04:05Z07:00": cannot parse "string" as "2006"
-2024/12/12 14:11:43 Failed to create passenger: parsing time "string" as "2006-01-02T15:04:05Z07:00": cannot parse "string" as "2006"
-2024/12/12 14:11:43 Failed to create passenger: parsing time "string" as "2006-01-02T15:04:05Z07:00": cannot parse "string" as "2006"
-2024/12/12 14:11:44 Failed to create passenger: parsing time "string" as "2006-01-02T15:04:05Z07:00": cannot parse "string" as "2006"
-2024/12/12 14:11:44 Failed to create passenger: parsing time "string" as "2006-01-02T15:04:05Z07:00": cannot parse "string" as "2006"
-2024/12/12 14:39:34 Failed to create user: could not insert user: pq: duplicate key value violates unique constraint "users_citizen_id_key"
+2024/12/21 23:14:26 could not remove flight: pq: null value in column "flight_id" of relation "bookings" violates not-null constraint
+2024/12/21 23:14:26 Failed to remove flight: pq: null value in column "flight_id" of relation "bookings" violates not-null constraint

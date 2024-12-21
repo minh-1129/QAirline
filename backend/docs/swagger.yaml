@@ -41,16 +41,22 @@ definitions:
         type: integer
       citizen_id:
         type: string
-      class:
+      dob:
+        type: string
+      email:
+        $ref: '#/definitions/sql.NullString'
+      first_name:
         type: string
       flight_id:
         type: integer
-      price:
-        type: number
-      seat_number:
+      last_name:
         type: string
+      phone_number:
+        $ref: '#/definitions/sql.NullString'
       total_passengers:
         type: integer
+      total_price:
+        type: number
     type: object
   database.Flight:
     properties:
@@ -72,7 +78,20 @@ definitions:
         type: string
       gate:
         type: string
+      price:
+        type: number
       status:
+        type: string
+    type: object
+  database.News:
+    properties:
+      category:
+        type: string
+      content:
+        type: string
+      news_id:
+        type: integer
+      title:
         type: string
     type: object
   database.Passenger:
@@ -95,7 +114,24 @@ definitions:
         type: integer
       phone_number:
         $ref: '#/definitions/sql.NullString'
+      seat_id:
+        type: integer
+    type: object
+  database.Seat:
+    properties:
+      aircraft_id:
+        type: integer
+      flight_id:
+        type: integer
+      seat_id:
+        type: integer
       seat_number:
+        type: string
+      seat_price:
+        type: number
+      seat_status:
+        type: string
+      seat_type:
         type: string
     type: object
   database.User:
@@ -767,56 +803,6 @@ paths:
       summary: Update a flight
       tags:
       - flights
-  /api/v1/flights/roundtrip:
-    get:
-      description: Fetch round-trip flights based on departure and arrival airports
-        and times
-      parameters:
-      - description: Departure Airport
-        in: query
-        name: departure
-        required: true
-        type: string
-      - description: Arrival Airport
-        in: query
-        name: arrival
-        required: true
-        type: string
-      - description: Departure Time
-        format: date-time
-        in: query
-        name: departure_time
-        required: true
-        type: string
-      - description: Return Time
-        format: date-time
-        in: query
-        name: return_time
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: departing_flights and return_flights
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Get round-trip flights
-      tags:
-      - flights
   /api/v1/flights/search:
     get:
       consumes:
@@ -938,6 +924,192 @@ paths:
       summary: Get flights by departure and arrival airports and departure time
       tags:
       - flights
+  /api/v1/flights/search/roundtrip:
+    get:
+      description: Fetch round-trip flights based on departure and arrival airports
+        and times
+      parameters:
+      - description: Departure Airport
+        in: query
+        name: departure
+        required: true
+        type: string
+      - description: Arrival Airport
+        in: query
+        name: arrival
+        required: true
+        type: string
+      - description: Departure Time
+        format: date-time
+        in: query
+        name: departure_time
+        required: true
+        type: string
+      - description: Return Time
+        format: date-time
+        in: query
+        name: return_time
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: departing_flights and return_flights
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get round-trip flights
+      tags:
+      - flights
+  /api/v1/flights/withseats:
+    post:
+      consumes:
+      - application/json
+      description: Create a new flight and seats
+      parameters:
+      - description: Flight object
+        in: body
+        name: flight
+        required: true
+        schema:
+          $ref: '#/definitions/database.Flight'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: flight and seats
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new flight and seats
+      tags:
+      - flights
+  /api/v1/news:
+    get:
+      consumes:
+      - application/json
+      description: Get all news articles
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.News'
+            type: array
+      summary: Get all news
+      tags:
+      - news
+    post:
+      consumes:
+      - application/json
+      description: Create a new news article
+      parameters:
+      - description: News object
+        in: body
+        name: news
+        required: true
+        schema:
+          $ref: '#/definitions/database.News'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.News'
+      summary: Create news
+      tags:
+      - news
+  /api/v1/news/{news_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a news article
+      parameters:
+      - description: News ID
+        in: path
+        name: news_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Delete news
+      tags:
+      - news
+    get:
+      consumes:
+      - application/json
+      description: Get a news article by its ID
+      parameters:
+      - description: News ID
+        in: path
+        name: news_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.News'
+      summary: Get news by ID
+      tags:
+      - news
+    put:
+      consumes:
+      - application/json
+      description: Update a news article
+      parameters:
+      - description: News ID
+        in: path
+        name: news_id
+        required: true
+        type: integer
+      - description: News object
+        in: body
+        name: news
+        required: true
+        schema:
+          $ref: '#/definitions/database.News'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Update news
+      tags:
+      - news
   /api/v1/passengers:
     get:
       consumes:
@@ -1068,6 +1240,261 @@ paths:
       summary: Update passenger by ID
       tags:
       - passengers
+  /api/v1/seats:
+    get:
+      consumes:
+      - application/json
+      description: Get all seats
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Seat'
+            type: array
+      summary: Get all seats
+      tags:
+      - seats
+  /api/v1/seats/flight_id/{flight_id}/aircraft_id/{aircraft_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove all seats by flight and aircraft ID
+      parameters:
+      - description: Flight ID
+        in: path
+        name: flight_id
+        required: true
+        type: integer
+      - description: Aircraft ID
+        in: path
+        name: aircraft_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Remove all seats by flight and aircraft ID
+      tags:
+      - seats
+    get:
+      consumes:
+      - application/json
+      description: Get all seats by flight and aircraft ID
+      parameters:
+      - description: Flight ID
+        in: path
+        name: flight_id
+        required: true
+        type: integer
+      - description: Aircraft ID
+        in: path
+        name: aircraft_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Seat'
+            type: array
+      summary: Get all seats by flight and aircraft ID
+      tags:
+      - seats
+    post:
+      consumes:
+      - application/json
+      description: Create seats by flight and aircraft ID  from an array
+      parameters:
+      - description: Flight ID
+        in: path
+        name: flight_id
+        required: true
+        type: integer
+      - description: Aircraft ID
+        in: path
+        name: aircraft_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/database.Seat'
+            type: array
+      summary: Create seats by flight and aircraft ID from an array
+      tags:
+      - seats
+  /api/v1/seats/flight_id/{flight_id}/aircraft_id/{aircraft_id}/available:
+    get:
+      consumes:
+      - application/json
+      description: Get available seats by flight and aircraft ID
+      parameters:
+      - description: Flight ID
+        in: path
+        name: flight_id
+        required: true
+        type: integer
+      - description: Aircraft ID
+        in: path
+        name: aircraft_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Seat'
+            type: array
+      summary: Get available seats by flight and aircraft ID
+      tags:
+      - seats
+  /api/v1/seats/flight_id/{flight_id}/aircraft_id/{aircraft_id}/capacity/{capacity}:
+    post:
+      consumes:
+      - application/json
+      description: Create seats by flight and aircraft ID from capacity
+      parameters:
+      - description: Flight ID
+        in: path
+        name: flight_id
+        required: true
+        type: integer
+      - description: Aircraft ID
+        in: path
+        name: aircraft_id
+        required: true
+        type: integer
+      - description: Capacity
+        in: path
+        name: capacity
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/database.Seat'
+            type: array
+      summary: Create seats by flight and aircraft ID from capacity
+      tags:
+      - seats
+  /api/v1/seats/flight_id/{flight_id}/aircraft_id/{aircraft_id}/seat_number/{seat_number}:
+    get:
+      consumes:
+      - application/json
+      description: Get seat by number with flight and aircraft ID
+      parameters:
+      - description: Flight ID
+        in: path
+        name: flight_id
+        required: true
+        type: integer
+      - description: Aircraft ID
+        in: path
+        name: aircraft_id
+        required: true
+        type: integer
+      - description: Seat Number
+        in: path
+        name: seat_number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Seat'
+      summary: Get seat by number with flight and aircraft ID
+      tags:
+      - seats
+  /api/v1/seats/seat_id/{seat_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove seat by ID
+      parameters:
+      - description: Seat ID
+        in: path
+        name: seat_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Remove seat by ID
+      tags:
+      - seats
+    get:
+      consumes:
+      - application/json
+      description: Get seat by ID
+      parameters:
+      - description: Seat ID
+        in: path
+        name: seat_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Seat'
+      summary: Get seat by ID
+      tags:
+      - seats
+    put:
+      consumes:
+      - application/json
+      description: Update seat by ID
+      parameters:
+      - description: Seat ID
+        in: path
+        name: seat_id
+        required: true
+        type: integer
+      - description: Seat Status
+        in: path
+        name: status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Update seat by ID
+      tags:
+      - seats
   /api/v1/users:
     get:
       consumes:

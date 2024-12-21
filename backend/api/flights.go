@@ -57,7 +57,7 @@ func CreateFlight(db *sql.DB) http.HandlerFunc {
             return
         }
 
-        flightID, err := database.InsertFlight(db, &flight)
+        flightID, err := database.InsertFlight(db, flight)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
             log.Printf("Failed to create flight: %v\n", err)
@@ -66,6 +66,41 @@ func CreateFlight(db *sql.DB) http.HandlerFunc {
 
         flight.FlightID = flightID
         respondWithJSON(r, w, http.StatusCreated, flight)
+    }
+}
+
+// @Summary Create a new flight and seats
+// @Description Create a new flight and seats
+// @Tags flights
+// @Accept json
+// @Produce json
+// @Param flight body database.Flight true "Flight object"
+// @Success 201 {object} map[string]interface{} "flight and seats"
+// @Failure 400 {object} map[string]string "error"
+// @Failure 500 {object} map[string]string "error"
+// @Router /api/v1/flights/withseats [post]
+// CreateFlightWithSeats creates a new flight and its seats
+func CreateFlightWithSeats(db *sql.DB) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        flight := database.Flight{}
+        if err := json.NewDecoder(r.Body).Decode(&flight); err != nil {
+            respondWithJSON(r, w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+            log.Printf("Failed to create flight: %v\n", err)
+            return
+        }
+
+        flightID, seats, err := database.InsertFlightWithSeats(db, flight)
+        if err != nil {
+            respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+            log.Printf("Failed to create flight: %v\n", err)
+            return
+        }
+
+        flight.FlightID = flightID
+        respondWithJSON(r, w, http.StatusCreated, map[string]interface{}{
+            "flight": flight,
+            "seats": seats,
+        })
     }
 }
 
@@ -167,7 +202,7 @@ func UpdateFlight(db *sql.DB) http.HandlerFunc {
         flight.FlightID = flightID
 
         // Call the UpdateFlight function to update the flight in the database
-        err = database.UpdateFlight(db, &flight)
+        err = database.UpdateFlight(db, flight)
         if err != nil {
             respondWithJSON(r, w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
             log.Printf("Failed to update flight: %v\n", err)
@@ -297,7 +332,7 @@ func GetFlightsByDeAndArrAirportAndDepTime(db *sql.DB) http.HandlerFunc {
 // @Success 200 {object} map[string]interface{} "departing_flights and return_flights"
 // @Failure 400 {object} map[string]string "error"
 // @Failure 500 {object} map[string]string "error"
-// @Router /api/v1/flights/roundtrip [get]
+// @Router /api/v1/flights/search/roundtrip [get]
 func GetRoundTripFlightsByDeAndArrAirportAndTime(db *sql.DB) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
         departureAirport := r.URL.Query().Get("departure")
@@ -339,42 +374,46 @@ func GetRoundTripFlightsByDeAndArrAirportAndTime(db *sql.DB) http.HandlerFunc {
 }
 
 // RegisterFlightsRoutes registers flights routes
-func RegisterFlightsRoutes(db *sql.DB) {
+func RegisterFlightsRoutes(db *sql.DB, mux *http.ServeMux) {
     // Register the API routes
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, FlightRoute)),
         GetAllFlights(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("POST /%s", GetJoinedPath(API_BASE_URL, FlightRoute)),
         CreateFlight(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
+        fmt.Sprintf("POST /%s", GetJoinedPath(API_BASE_URL, FlightRoute, "withseats")),
+        CreateFlightWithSeats(db),
+    )
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, FlightRoute, "{flight_id}")),
         GetFlightByID(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("PUT /%s", GetJoinedPath(API_BASE_URL, FlightRoute, "{flight_id}")),
         UpdateFlight(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("DELETE /%s", GetJoinedPath(API_BASE_URL, FlightRoute, "{flight_id}")),
         RemoveFlight(db),
     )
-    http.HandleFunc(
-        fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, FlightRoute, "search/flight_number")),
+    mux.HandleFunc(
+        fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, FlightRoute, "search", "flight_number")),
         GetFlightsByFlightNumber(db),
     )
-    http.HandleFunc(
+    mux.HandleFunc(
         fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, FlightRoute, "search")),
         GetFlightsByDeAndArrAirport(db),
     )
-    http.HandleFunc(
-        fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, FlightRoute, "search/oneway")),
+    mux.HandleFunc(
+        fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, FlightRoute, "search", "oneway")),
         GetFlightsByDeAndArrAirportAndDepTime(db),
     )
-    http.HandleFunc(
-        fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, FlightRoute, "search/roundtrip")),
+    mux.HandleFunc(
+        fmt.Sprintf("GET /%s", GetJoinedPath(API_BASE_URL, FlightRoute, "search", "roundtrip")),
         GetRoundTripFlightsByDeAndArrAirportAndTime(db),
     )
 }

@@ -14,11 +14,14 @@ type Booking struct {
     BookingID       int `json:"booking_id"`
     FlightID        int `json:"flight_id"`
     CitizenID       string `json:"citizen_id"`
+    FirstName       string `json:"first_name"`
+    LastName        string `json:"last_name"`
+    PhoneNumber     sql.NullString `json:"phone_number"`
+    Email           sql.NullString `json:"email"`
+    Dob             time.Time `json:"dob"`
     TotalPassengers int `json:"total_passengers"`
     BookingDate     time.Time `json:"booking_date"`
-    SeatNumber      string `json:"seat_number"`
-    Class           string `json:"class"`
-    Price           float64 `json:"price"`
+    TotalPrice           float64 `json:"total_price"`
 }
 
 // CreateBookingsTable creates the 'bookings' table with foreign key references to flights
@@ -28,11 +31,14 @@ func CreateBookingsTable(db *sql.DB) error {
         booking_id SERIAL PRIMARY KEY,
         flight_id INT NOT NULL,  -- Foreign key to reference the flight this seat belongs to (ID)
         citizen_id VARCHAR(100) NOT NULL,  -- Foreign key to reference the passenger who booked this seat (ID)
+        first_name VARCHAR(100) NOT NULL,  -- First name of the passenger
+        last_name VARCHAR(100) NOT NULL,  -- Last name of the passenger
+        phone_number VARCHAR(20),  -- PhoneNumber number of the passenger
+        email VARCHAR(100),  -- Email address of the passenger
+        dob DATE NOT NULL,  -- Date of birth of the passenger
         total_passengers INT NOT NULL,  -- Total number of passengers in the booking
         booking_date TIMESTAMPTZ NOT NULL,  -- Date the booking was made
-        seat_number VARCHAR(10) NOT NULL,  -- Booking number, e.g., "1A", "2B"
-        class VARCHAR(30) NOT NULL,  -- Class of the seat, e.g., "Economy", "Business"
-        price DECIMAL(20, 2) NOT NULL DEFAULT 0.00  -- Price of the seat
+        total_price DECIMAL(20, 2) NOT NULL DEFAULT 0.00  -- Price of the seat
     )
     `
     _, err := db.Exec(createTableQuery)
@@ -72,11 +78,14 @@ func GetBookingByID(db *sql.DB, bookingID int) (*Booking, error) {
         booking_id,
         flight_id,
         citizen_id,
+        first_name,
+        last_name,
+        phone_number,
+        email,
+        dob,
         total_passengers,
         booking_date,
-        seat_number,
-        class,
-        price
+        total_price
     FROM bookings WHERE booking_id = $1
     `
 
@@ -85,11 +94,14 @@ func GetBookingByID(db *sql.DB, bookingID int) (*Booking, error) {
         &booking.BookingID,
         &booking.FlightID,
         &booking.CitizenID,
+        &booking.FirstName,
+        &booking.LastName,
+        &booking.PhoneNumber,
+        &booking.Email,
+        &booking.Dob,
         &booking.TotalPassengers,
         &booking.BookingDate,
-        &booking.SeatNumber,
-        &booking.Class,
-        &booking.Price,
+        &booking.TotalPrice,
     )
     if err != nil {
         return nil, fmt.Errorf("could not get booking: %v", err)
@@ -105,11 +117,14 @@ func GetBookingByFlightID(db *sql.DB, flightID int) ([]Booking, error) {
         booking_id,
         flight_id,
         citizen_id,
+        first_name,
+        last_name,
+        phone_number,
+        email,
+        dob,
         total_passengers,
         booking_date,
-        seat_number,
-        class,
-        price
+        total_price
     FROM bookings WHERE flight_id = $1
     `
 
@@ -126,11 +141,14 @@ func GetBookingByFlightID(db *sql.DB, flightID int) ([]Booking, error) {
             &booking.BookingID,
             &booking.FlightID,
             &booking.CitizenID,
+            &booking.FirstName,
+            &booking.LastName,
+            &booking.PhoneNumber,
+            &booking.Email,
+            &booking.Dob,
             &booking.TotalPassengers,
             &booking.BookingDate,
-            &booking.SeatNumber,
-            &booking.Class,
-            &booking.Price,
+            &booking.TotalPrice,
         ); err != nil {
             return nil, fmt.Errorf("could not get booking: %v", err)
         }
@@ -147,11 +165,14 @@ func GetBookingByCitizenID(db *sql.DB, citizenID string) ([]Booking, error) {
         booking_id,
         flight_id,
         citizen_id,
+        first_name,
+        last_name,
+        phone_number,
+        email,
+        dob,
         total_passengers,
         booking_date,
-        seat_number,
-        class,
-        price
+        total_price
     FROM bookings WHERE citizen_id = $1
     `
 
@@ -168,11 +189,14 @@ func GetBookingByCitizenID(db *sql.DB, citizenID string) ([]Booking, error) {
             &booking.BookingID,
             &booking.FlightID,
             &booking.CitizenID,
+            &booking.FirstName,
+            &booking.LastName,
+            &booking.PhoneNumber,
+            &booking.Email,
+            &booking.Dob,
             &booking.TotalPassengers,
             &booking.BookingDate,
-            &booking.SeatNumber,
-            &booking.Class,
-            &booking.Price,
+            &booking.TotalPrice,
         ); err != nil {
             return nil, fmt.Errorf("could not get booking: %v", err)
         }
@@ -189,11 +213,14 @@ func GetBookingByFlightName(db *sql.DB, flightName string) ([]Booking, error) {
         booking_id,
         flight_id,
         citizen_id,
+        first_name,
+        last_name,
+        phone_number,
+        email,
+        dob,
         total_passengers,
         booking_date,
-        seat_number,
-        class,
-        price
+        total_price
     FROM bookings
     JOIN flights ON bookings.flight_id = flights.flight_id
     WHERE flights.flight_name = $1
@@ -212,11 +239,14 @@ func GetBookingByFlightName(db *sql.DB, flightName string) ([]Booking, error) {
             &booking.BookingID,
             &booking.FlightID,
             &booking.CitizenID,
+            &booking.FirstName,
+            &booking.LastName,
+            &booking.PhoneNumber,
+            &booking.Email,
+            &booking.Dob,
             &booking.TotalPassengers,
             &booking.BookingDate,
-            &booking.SeatNumber,
-            &booking.Class,
-            &booking.Price,
+            &booking.TotalPrice,
         ); err != nil {
             return nil, fmt.Errorf("could not get booking: %v", err)
         }
@@ -229,20 +259,34 @@ func GetBookingByFlightName(db *sql.DB, flightName string) ([]Booking, error) {
 // InsertBooking inserts a new seat into the bookings table
 func InsertBooking(db *sql.DB, booking *Booking) (int, error) {
     query := `
-    INSERT INTO bookings (flight_id, citizen_id, total_passengers, booking_date, seat_number, class, price)
-    VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING booking_id
+    INSERT INTO bookings (
+        flight_id,
+        citizen_id,
+        first_name,
+        last_name,
+        phone_number,
+        email,
+        dob,
+        total_passengers,
+        booking_date,
+        total_price
+    )
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING booking_id
     `
 
     var bookingID int
     err := db.QueryRow(
         query,
-        booking.FlightID,
-        booking.CitizenID,
-        booking.TotalPassengers,
-        booking.BookingDate,
-        booking.SeatNumber,
-        booking.Class,
-        booking.Price,
+        &booking.FlightID,
+        &booking.CitizenID,
+        &booking.FirstName,
+        &booking.LastName,
+        &booking.PhoneNumber,
+        &booking.Email,
+        &booking.Dob,
+        &booking.TotalPassengers,
+        &booking.BookingDate,
+        &booking.TotalPrice,
     ).Scan(&bookingID)
     if err != nil {
         return 0, fmt.Errorf("could not insert seat: %v", err)
@@ -255,17 +299,31 @@ func InsertBooking(db *sql.DB, booking *Booking) (int, error) {
 func UpdateBooking(db *sql.DB, booking *Booking) error {
     query := `
     UPDATE bookings
-    SET flight_id = $1, citizen_id = $2, total_passengers = $3, booking_date = $4, seat_number = $5, class = $6, price = $7
-    WHERE booking_id = $8
+    SET
+        flight_id = $1,
+        citizen_id = $2,
+        first_name = $3,
+        last_name = $4,
+        phone_number = $5,
+        email = $6,
+        dob = $7,
+        total_passengers = $8,
+        booking_date = $9,
+        total_price = $10
+    WHERE booking_id = $11
     `
 
     _, err := db.Exec(query,
         booking.FlightID,
         booking.CitizenID,
+        booking.FirstName,
+        booking.LastName,
+        booking.PhoneNumber,
+        booking.Email,
+        booking.Dob,
         booking.TotalPassengers,
         booking.BookingDate,
-        booking.SeatNumber,
-        booking.Price,
+        booking.TotalPrice,
         booking.BookingID,
     )
     if err != nil {
@@ -296,11 +354,14 @@ func GetAllBookings(db *sql.DB) ([]Booking, error) {
         booking_id,
         flight_id,
         citizen_id,
+        first_name,
+        last_name,
+        phone_number,
+        email,
+        dob,
         total_passengers,
         booking_date,
-        seat_number,
-        class,
-        price
+        total_price
     FROM bookings
     `
 
@@ -317,11 +378,14 @@ func GetAllBookings(db *sql.DB) ([]Booking, error) {
             &booking.BookingID,
             &booking.FlightID,
             &booking.CitizenID,
+            &booking.FirstName,
+            &booking.LastName,
+            &booking.PhoneNumber,
+            &booking.Email,
+            &booking.Dob,
             &booking.TotalPassengers,
             &booking.BookingDate,
-            &booking.SeatNumber,
-            &booking.Class,
-            &booking.Price,
+            &booking.TotalPrice,
         ); err != nil {
             return []Booking{}, fmt.Errorf("could not get bookings: %v", err)
         }
