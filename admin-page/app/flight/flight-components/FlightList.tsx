@@ -46,7 +46,16 @@ function FlightList() {
 
   useEffect(() => {
     fetchFlights();
-  }, [flightList]);
+  }, []);
+
+  function handleRemoveFlight (flightId) {
+    fetch(`http://112.137.129.161:1803/api/v1/flights/${flightId}`, {
+      method: "DELETE"
+    }).then((response) => {
+      console.log(response);
+      fetchFlights();
+    })
+  }
 
   return (
     <div>
@@ -54,6 +63,7 @@ function FlightList() {
         return (
           <div className="flex-row" key={index}>
             <FlightCard
+              flight_id={flight.flight_id}
               airportsList={airportsList}
               aircraftId={flight.aircraft_id}
               arrivalTime={flight.arrival_time}
@@ -64,6 +74,8 @@ function FlightList() {
               flightNumber={flight.flight_number}
               gate={flight.gate}
               status={flight.status}
+              handleRemoveFlight={handleRemoveFlight}
+              price={flight.price}
             />
           </div>
         );

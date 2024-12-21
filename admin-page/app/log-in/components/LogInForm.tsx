@@ -1,24 +1,38 @@
-'use client';
+"use client";
 import React, { useState } from "react";
 import logo from "../../images/runaway.jpg";
 import Image from "next/image";
 
 function LogInForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  function handleEmail (e) {
+  function handleEmail(e) {
     setEmail(e.target.value);
   }
 
-  function handlePassword (e) {
+  function handlePassword(e) {
     setPassword(e.target.value);
   }
 
-  function handleLogIn (e) {
+  function handleLogIn(e) {
     e.preventDefault();
-    console.log(email);
-    console.log(password);
+    const credentials = btoa(`${email}:${password}`);
+
+    if (email && password) {
+      fetch("http://112.137.129.161:1803/admin-login", {
+        method: "POST",
+        headers: {
+          Authorization: `Basic ${credentials}`,
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }).then((response) => {
+        if (response.status === 200) {
+          window.location.href = "../plane";
+        }
+      });
+    }
   }
 
   return (
@@ -45,7 +59,7 @@ function LogInForm() {
                   Your email
                 </label>
                 <input
-                  type="email"
+                  type="text"
                   name="email"
                   id="email"
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -106,15 +120,6 @@ function LogInForm() {
               >
                 Sign in
               </button>
-              <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                Don’t have an account yet?{" "}
-                <a
-                  href="/sign-up"
-                  className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                >
-                  Sign up
-                </a>
-              </p>
             </form>
           </div>
         </div>

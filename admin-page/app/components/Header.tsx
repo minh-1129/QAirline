@@ -31,7 +31,7 @@ export default function Header() {
               : styles.link
           }
         >
-          Home
+          Stats
         </Link>
         <Link
           href="/plane"
@@ -53,15 +53,16 @@ export default function Header() {
         >
           Flight
         </Link>
+
         <Link
-          href="/log-in"
+          href="/post"
           style={
-            pathname === "/log-in"
+            pathname === "/post"
               ? { ...styles.link, ...styles.activeLink }
               : styles.link
           }
         >
-          Log In
+          Post
         </Link>
       </div>
     </nav>
